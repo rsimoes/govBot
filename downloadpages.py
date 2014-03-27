@@ -60,12 +60,11 @@ def downloadpages(limit = 'current_source is null', original = False):
     print item
     if re.search('\.pdf',url):
       html = convertpdf(url)
-      pass
-#    else:
-#      html = readhtml(url) 
-      query = "UPDATE pages SET {0}='{1}', {2}=CURDATE() WHERE url='{3}';\n\n".format(col1, html, col2, url.replace('\'',"\\'"))
-      c.execute(query)
-      db.commit()
+    else:
+      html = readhtml(url) 
+    query = "UPDATE pages SET {0}='{1}', {2}=CURDATE() WHERE url='{3}';\n\n".format(col1, html, col2, url.replace('\'',"\\'")) 
+    c.execute(query)
+    db.commit()
   db.close()
   return len(list(urls))
 
