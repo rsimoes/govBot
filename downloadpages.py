@@ -1,4 +1,4 @@
-import sys, os, re, subprocess, urllib, urllib2, MySQLdb, pdfminer, chardet
+import sys, os, re, subprocess, urllib, urllib2, MySQLdb, pdfminer, chardet, threading
 
 def checkURL(url):
   code = urllib2.urlopen(url).code 
@@ -37,7 +37,17 @@ def readhtml(url):
   html = html.replace('"','\\"')
   return html
 
-def downloadpages(limit = 'current_source is null', original = False):
+class pageThread(threading.Thread):
+  def __init__(self, threadID, name, counter, url):
+    self.threadID = threadID
+    self.name = name
+    self.counter = counter
+    self.url = url
+  def run(self):
+    print self.url
+
+
+def downloadpages(limit = 'original_source is null', original = True):
   ##Limit is a string which is used as the 'WHERE' clause of a query against the pages table (Excluding the word 'WHERE')
   ##Original is a boolean which indicates whether the html should be stored in the 'original_source' column. When False, html will be stored in current_source
   limit = str(limit)
@@ -55,13 +65,18 @@ def downloadpages(limit = 'current_source is null', original = False):
   c = db.cursor()
   c.execute(query)
   urls = c.fetchall()
+  urlcount = len(urls)
+  position = 0
+  
   for item in urls:
-    url = str(item[0])
     print item
+    url = str(item[0])
+    
     if re.search('\.pdf',url):
       html = convertpdf(url)
     else:
       html = readhtml(url) 
+    
     query = "UPDATE pages SET {0}='{1}', {2}=CURDATE() WHERE url='{3}';\n\n".format(col1, html, col2, url.replace('\'',"\\'")) 
     c.execute(query)
     db.commit()
