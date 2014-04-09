@@ -16,11 +16,11 @@ def checkpagesforwords(limit):
   for i in range(count):
     item = pagecursor.fetchone()
     print item[0]
-    if re.search(str(item[1]).replace('\.','\\\.'),str(item[2]).lower().replace(","," ").replace("-"," ")):
-      if updatecursor.execute("select * from pages_has_words where pages_idpages = {0} and words_idwords = {1} and location = 'source';".format(item[4], item[3])) == 0:
+    if updatecursor.execute("select * from pages_has_words where pages_idpages = {0} and words_idwords = {1} and location = 'source';".format(item[4], item[3])) == 0:
+      if re.search(str(item[1]).replace('\.','\\\.'),str(item[2]).lower().replace(","," ").replace("-"," ")):
         updatecursor.execute("insert into pages_has_words (pages_idpages, words_idwords, location) values ('{0}', '{1}', 'source');".format(item[4], item[3]))
         db.commit()
-  
+ 
   db.close()
 
-checkpagesforwords("where offices_has_words.location = 'official_name' and offices_has_pages.page_types_idpage_types = 1")
+checkpagesforwords("left outer join pages_has_words on pages_has_words.pages_idpages = pages.idpages where offices_has_words.location = 'official_name' and offices_has_pages.page_types_idpage_types = 1 and pages_has_words.pages_idpages is NULL")
