@@ -17,7 +17,7 @@ def wordsfromoffices(limit):
   for item in officeinfo:
     print item
     for i in range(3):
-      words = item[i+1].lower().replace(","," ").replace("'","\\'").replace("-"," ").replace("   "," ").replace("  "," ").split(" ")
+      words = item[i+1].lower().replace(","," ").replace("(","").replace(")","").replace("'","\\'").replace("-"," ").replace("   "," ").replace("  "," ").split(" ")
       for element in words:
         idquery = "select idwords from words where word = '{0}';".format(element)
         insertword = "insert into words (word) values ('{0}');".format(element)
