@@ -12,7 +12,6 @@ def checkpagesforwords(limit):
     {0};""".format(limit))
   updatecursor = db.cursor()
   ##Proceed one word instance at a time, search for words in the related source, update pages_has_words
-  ##ERROR: Inserting duplicate rows
   for i in range(count):
     item = pagecursor.fetchone()
     print item[0]
