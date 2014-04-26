@@ -71,7 +71,7 @@ def verifyCSV(filename, senateObject, houseObject):
   senateNames, senateParties, senateStates, senateAddresses, senateWebsites = senateObject
   houseDistricts, houseNames, houseParties, houseAddresses = houseObject
   congress = []
-  notinSenate = []
+  notinSenate = {}
   notinHouse = {}
   notinSenateCSV = senateNames 
   notinHouseCSV = houseDistricts
@@ -92,7 +92,7 @@ def verifyCSV(filename, senateObject, houseObject):
         notinSenateCSV.remove(congressperson['Official Name'])
         knownReps.append(congressperson)
       else:
-        notinSenate.append(congressperson)
+        notinSenate[congressperson['Official Name']] = congressperson
     elif congressperson['Body Name'] == 'US House of Representatives':
       rawDist = congressperson['Electoral District']
       if len(rawDist) == 2:
@@ -158,17 +158,17 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
                  'Completed?': 'TRUE', 
                  'Email': '', 
                  'Website': newWebsite, 
-                 'UID': 'FEe00475', 
+                 'UID': oldInfo['UID'], 
                  'OCDID': '', 
-                 'Election Year': '2014', 
+                 'Election Year': nextElection[:4], 
                  'Expires': nextInauguration, 
                  'Phone': newPhone, 
                  'Birth Day': newDOB[8:], 
                  'Body Name': 'US House of Representatives', 
-                 'Office Name': 'United State House of Representatives WI-08', 
+                 'Office Name': oldInfo['Office Name'], 
                  'Youtube': newYoutube, 
                  'Office Level': 'Federal - Lower', 
-                 'Electoral District': 'WI Congressional District 8', 
+                 'Electoral District': oldInfo['Electoral District'], 
                  'Birth Year': newDOB[:4], 
                  'Body Represents - State': nonrep[:2], 
                  'Election Day': nextElection[8:], 
@@ -187,24 +187,104 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
                  'Twitter Name': newTwitter
       } 
       knownReps.append(repInfo)
+  
+  for nonsen in notinSenate:
+    oldInfo = notinSenate[nonsen]
+    state = oldInfo['Body Represents - State']
+    print "The CSV lists", nonsen, "as a Senator from",state
+    print "The Website lists the following as unmatched senators from that state:"    
+    possibleNames = []
+    count = 0
+    for unplaced in notinSenateCSV:
+      if senateStates[unplaced] == state:
+        count += 1
+        possibleNames.append(unplaced)
+        print count, unplaced
+    if count == 2:
+      index = int(raw_input("Select which Senator from the Website is connected to {0} (1 or 2)".format(nonsen)))
+      while index not in range(1,3):
+        index = int(raw_input("No really, select 1 or 2"))
+    elif count == 1:
+      index = 1
+    else:
+      raise exception("The CSV and Website disagree as to the number of senators in {0}. Please check the csv".format(state))
+    webName = possibleNames[index]
+    newSen = str(raw_input("Is this a new Senator? (Y/N)")).upper() 
+    while newSen not in ['Y','N']:
+      newSen = str(raw_input("Actually the options are (Y)es this Senator is new, or (N)o they are not. Please choose one:")).upper()
+    
+    nameDict = {'W':webName, 'C':nonsen}
+    chooseName = str(raw_input("Use name from (W)ebsite or (C)SV:")).upper()
+    while chooseName not in ['W', 'C']:
+      chooseName = str(raw_input("Please choose either W or C:")).upper()
+    newName = nameDict[chooseName]
+    
+    if newSen == 'N':
+      repInfo = oldInfo
+      repInfo['Official Name'] = newName
+    else:
+      newDOB = str(raw_input("Enter their DOB (yyyy-mm-dd):"))
+      while len(newDOB) != 10:
+        newDOB = str(raw_input("Enter DOB using format yyyy-mm-dd:"))
+      newPhone = str(raw_input("Enter their phone:"))
+      newYoutube = str(raw_input("Enter their YouTube:"))
+      newFacebook = str(raw_input("Enter their Facebook:"))
+      newTwitter = str(raw_input("Enter their Twitter:"))
+      newWiki = str(raw_input("Enter their WikiWord:"))
+      newGoog = str(raw_input("Enter their Google+:"))
 
-  ##Add in senate later
-
+      repInfo = {'Body Represents - County': '', 
+                 'DOB': newDOB, 
+                 'Next Election': nextElection, 
+                 'State': state, 
+                 'Election Month': nextElection[5:7], 
+                 'Completed?': 'TRUE', 
+                 'Email': '', 
+                 'Website': newWebsite, 
+                 'UID': oldInfo['UID'], 
+                 'OCDID': oldInfo['OCDID'], 
+                 'Election Year': nextElection[:4], 
+                 'Expires': nextInauguration, 
+                 'Phone': newPhone, 
+                 'Birth Day': newDOB[8:], 
+                 'Body Name': oldInfo['Body Name'], 
+                 'Office Name': oldInfo['Office Name'], 
+                 'Youtube': newYoutube, 
+                 'Office Level': oldInfo['Office Level'], 
+                 'Electoral District': oldInfo['Electoral District'], 
+                 'Birth Year': newDOB[:4], 
+                 'Body Represents - State': state, 
+                 'Election Day': nextElection[8:], 
+                 'Body Represents - Muni': '', 
+                 'Expires Month': nextInauguration[5:7], 
+                 'Wiki Word': newWiki, 
+                 'Google Plus URL': newGoog, 
+                 'Mailing Address': senateAddresses[nameDict['W']], 
+                 'Source': 'http://www.senate.gov/general/contact_information/senators_cfm.xml', 
+                 'Official Name': nameDict['W'], 
+                 'Official Party': senateParties[nameDict['W']], 
+                 'Expires Year': newInauguration[:4], 
+                 'Birth Month': newDOB[5:7], 
+                 'Expires Day': newInauguration[8:], 
+                 'Facebook URL': newFacebook, 
+                 'Twitter Name': newTwitter
+      } 
+      
   print len(knownReps), 'known Representatives'
-  saveBool = str(raw_input("Save File? (Y/N):")).upper()
-  while saveBool not in ['Y', 'N']:
-    saveBool = str(raw_input("No really, choose Y or N")).upper()
-  if saveBool == 'Y':
+  save = str(raw_input("Save File? (Y/N):")).upper()
+  while save not in ['Y', 'N']:
+    save = str(raw_input("No really, choose Y or N")).upper()
+  if save == 'Y':
     fields = [ 'UID', 'State', 'Office Level', 'Body Name', 'Body Represents - State', 'Body Represents - County', 'Body Represents - Muni', 'Electoral District', 'Office Name', 'Official Name', 'Official Party', 'Completed?', 'Phone', 'Mailing Address', 'Website', 'Email', 'Facebook URL', 'Twitter Name', 'Google Plus URL', 'Wiki Word', 'Youtube', 'Birth Year', 'Birth Month', 'Birth Day', 'DOB', 'Election Year', 'Election Month', 'Election Day', 'Next Election', 'Expires Year', 'Expires Month', 'Expires Day', 'Expires', 'Source', 'OCDID', 'Zip']
     with open(outputDir, 'w') as output:
       dwObject = csv.DictWriter(output, fields, restval = '', delimiter = ',')
       dwObject.writeheader()
       for row in knownReps:
         dwObject.writerow(row)
-   
+ 
 if __name__ == '__main__':
   senateObject = downloadSenate(senateURL)
   houseObject = downloadHouse(houseURL)
-  errors = verifyCSV('/home/michael/Dropbox (NOIEF)/noBIP/social_media_collection/office_holders/FE Office Holders.csv', senateObject, houseObject)
+  errors = verifyCSV('/home/michael/Dropbox/noBIP/social_media_collection/office_holders/FE Office Holders.csv', senateObject, houseObject)
   promptAndChange('/home/michael/Desktop/test.csv',errors, houseObject, senateObject) 
 
