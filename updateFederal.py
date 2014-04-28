@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import urllib2, csv, re
 
+###Update these variables as needed
+csvLocation = '/home/michael/Dropbox (NOIEF)/social_media_collection/office_holders/FE Office Holders.csv'
 senateURL = 'http://www.senate.gov/general/contact_information/senators_cfm.xml'
 houseURL = 'http://clerk.house.gov/member_info/text-labels-113.txt'
 partyDict = {'R': 'Republican', 'D': 'Democratic', 'I': 'Independent','': 'Unknown'}
@@ -285,6 +287,6 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
 if __name__ == '__main__':
   senateObject = downloadSenate(senateURL)
   houseObject = downloadHouse(houseURL)
-  errors = verifyCSV('/home/michael/Dropbox (NOIEF)/noBIP/social_media_collection/office_holders/FE Office Holders.csv', senateObject, houseObject)
-  promptAndChange('/home/michael/Dropbox (NOIEF)/noBIP/social_media_collection/office_holders/FE Office Holders.csv',errors, houseObject, senateObject) 
+  errors = verifyCSV(csvLocation, senateObject, houseObject)
+  promptAndChange(csvLocation,errors, houseObject, senateObject) 
 
