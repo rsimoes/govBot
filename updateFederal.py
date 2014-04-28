@@ -200,9 +200,9 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
         possibleNames.append(unplaced)
         print len(possibleNames), unplaced
     if len(possibleNames) == 2:
-      index = int(raw_input("Select which Senator from the Website is connected to {0} (1 or 2)".format(nonsen))) - 1
+      index = int(raw_input("Select which Senator from the Website is connected to {0} (1 or 2):".format(nonsen))) - 1
       while index not in range(0, 2):
-        index = int(raw_input("No really, select 1 or 2")) - 1
+        index = int(raw_input("No really, select 1 or 2:")) - 1
     elif len(possibleNames) == 1:
       index = 0
     else:
