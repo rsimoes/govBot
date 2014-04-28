@@ -180,9 +180,9 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
                  'Source': 'http://www.house.gov/representatives/', 
                  'Official Name': nameDict['W'], 
                  'Official Party': houseParties[nonrep], 
-                 'Expires Year': newInauguration[:4], 
+                 'Expires Year': nextInauguration[:4], 
                  'Birth Month': newDOB[5:7], 
-                 'Expires Day': newInauguration[8:], 
+                 'Expires Day': nextInauguration[8:], 
                  'Facebook URL': newFacebook, 
                  'Twitter Name': newTwitter
       } 
@@ -194,18 +194,17 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
     print "The CSV lists", nonsen, "as a Senator from",state
     print "The Website lists the following as unmatched senators from that state:"    
     possibleNames = []
-    count = 0
+
     for unplaced in notinSenateCSV:
       if senateStates[unplaced] == state:
-        count += 1
         possibleNames.append(unplaced)
-        print count, unplaced
-    if count == 2:
-      index = int(raw_input("Select which Senator from the Website is connected to {0} (1 or 2)".format(nonsen)))
-      while index not in range(1,3):
-        index = int(raw_input("No really, select 1 or 2"))
-    elif count == 1:
-      index = 1
+        print len(possibleNames), unplaced
+    if len(possibleNames) == 2:
+      index = int(raw_input("Select which Senator from the Website is connected to {0} (1 or 2)".format(nonsen))) - 1
+      while index not in range(0, 2):
+        index = int(raw_input("No really, select 1 or 2")) - 1
+    elif len(possibleNames) == 1:
+      index = 0
     else:
       raise exception("The CSV and Website disagree as to the number of senators in {0}. Please check the csv".format(state))
     webName = possibleNames[index]
@@ -240,7 +239,7 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
                  'Election Month': nextElection[5:7], 
                  'Completed?': 'TRUE', 
                  'Email': '', 
-                 'Website': newWebsite, 
+                 'Website': senateWebsites[nameDict['W']], 
                  'UID': oldInfo['UID'], 
                  'OCDID': oldInfo['OCDID'], 
                  'Election Year': nextElection[:4], 
@@ -263,13 +262,14 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
                  'Source': 'http://www.senate.gov/general/contact_information/senators_cfm.xml', 
                  'Official Name': nameDict['W'], 
                  'Official Party': senateParties[nameDict['W']], 
-                 'Expires Year': newInauguration[:4], 
+                 'Expires Year': nextInauguration[:4], 
                  'Birth Month': newDOB[5:7], 
-                 'Expires Day': newInauguration[8:], 
+                 'Expires Day': nextInauguration[8:], 
                  'Facebook URL': newFacebook, 
                  'Twitter Name': newTwitter
       } 
-      
+    knownReps.append(repInfo) 
+  
   print len(knownReps), 'known Representatives'
   save = str(raw_input("Save File? (Y/N):")).upper()
   while save not in ['Y', 'N']:
@@ -285,6 +285,6 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
 if __name__ == '__main__':
   senateObject = downloadSenate(senateURL)
   houseObject = downloadHouse(houseURL)
-  errors = verifyCSV('/home/michael/Dropbox/noBIP/social_media_collection/office_holders/FE Office Holders.csv', senateObject, houseObject)
+  errors = verifyCSV('/home/michael/Desktop/FE Office Holders.csv', senateObject, houseObject)
   promptAndChange('/home/michael/Desktop/test.csv',errors, houseObject, senateObject) 
 
