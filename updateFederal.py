@@ -285,6 +285,6 @@ def promptAndChange(outputDir, errors, houseObject, senateObject):
 if __name__ == '__main__':
   senateObject = downloadSenate(senateURL)
   houseObject = downloadHouse(houseURL)
-  errors = verifyCSV('/home/michael/Desktop/FE Office Holders.csv', senateObject, houseObject)
-  promptAndChange('/home/michael/Desktop/test.csv',errors, houseObject, senateObject) 
+  errors = verifyCSV('/home/michael/Dropbox (NOIEF)/noBIP/social_media_collection/office_holders/FE Office Holders.csv', senateObject, houseObject)
+  promptAndChange('/home/michael/Dropbox (NOIEF)/noBIP/social_media_collection/office_holders/FE Office Holders.csv',errors, houseObject, senateObject) 
 
