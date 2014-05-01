@@ -21,7 +21,7 @@ def getHILeg(wrtFile):
     rawEmail = soup.find('', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_HyperLinkEmail'.format(i)})
     rawFacebook = soup.find('a', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_HyperLinkFacebook'.format(i)})
     rawTwitter = soup.find('a', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_HyperLinkTwitter'.format(i)})
-    rawYoutube = soup.find('a', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_HyperLinkYoutube'.format(i)})
+    rawYoutube = soup.find('a', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_HyperLinkYouTube'.format(i)})
     rawBody = soup.find('span', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_LabelDis'.format(i)})
     rawDistrict = soup.find('span', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_LabelDistrict'.format(i)})
 
@@ -63,7 +63,7 @@ def getHILeg(wrtFile):
     else:
       repInfo['Email'] = ''
     if rawFacebook is not None:
-      repInfo['Facebook'] = re.sub('^.*=', '', rawFacebook.get('href'))
+      repInfo['Facebook'] = re.sub('^.*page=', '', rawFacebook.get('href'))
     else:
       repInfo['Facebook'] = ''
     if rawTwitter is not None:
@@ -71,7 +71,7 @@ def getHILeg(wrtFile):
     else:
       repInfo['Twitter'] = ''
     if rawYoutube is not None:
-      repInfo['Youtube'] = re.sub('^.*/', '', rawYoutube.get('href'))
+      repInfo['Youtube'] = re.sub('(^.*channel/)|(\\?.*$)','', rawYoutube.get('href'))
     else:
       repInfo['Youtube'] = ''
     
