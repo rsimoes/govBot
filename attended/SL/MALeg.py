@@ -36,10 +36,12 @@ def getMALeg(wrtFile):
       branch = 'Senate'
     else:
       branch = rawBranch.string.strip()
+
     print repInfo['Website']
-    distList = BeautifulSoup(urllib2.urlopen(repInfo['Website']).read()).find('div', {'id': 'District'}).get_text().replace('--', ',').replace('-', ',').replace('consisting', ',').replace('Consisting', ',').split(',')[0].strip().split(' ')
-   
+    
+    distList = BeautifulSoup(urllib2.urlopen(repInfo['Website']).read()).find('div', {'id': 'District'}).get_text().replace('--', ',').replace(' - ', ',').replace('consisting', ',').replace('Consisting', ',').split(',')[0].strip().split(' ')
     ordinalList = distList[0].split('-')
+    
     lastString = ordinalList[len(ordinalList)-1]
     distNum = ''
     if ordinalList[0].lower() in ordinalDict.keys():
