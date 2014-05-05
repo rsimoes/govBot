@@ -39,7 +39,7 @@ def getMALeg(wrtFile):
 
     print repInfo['Website']
     
-    distList = BeautifulSoup(urllib2.urlopen(repInfo['Website']).read()).find('div', {'id': 'District'}).get_text().replace(' - ', ' -- ').replace('consisting', '--').replce('consiting', '--').replace('consisting','--').replace('Consisting', '--').split('--')[0].strip().replace(',',' ').replace('   ', ' ').replace('  ', ' ').split(' ')
+    distList = BeautifulSoup(urllib2.urlopen(repInfo['Website']).read()).find('div', {'id': 'District'}).get_text().replace(' - ', ' -- ').replace('consisting', '--').replace('consiting', '--').replace('consisting','--').replace('Consisting', '--').split('--')[0].strip().replace(',',' ').replace('   ', ' ').replace('  ', ' ').split(' ')
     ordinalList = distList[0].split('-')
     
     lastString = ordinalList[len(ordinalList)-1]
