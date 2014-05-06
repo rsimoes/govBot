@@ -18,10 +18,10 @@ def pullIndividual(url,name,body):
   
   if rawDistrict is not None:
     if rawDistrict.string is not None:
-      indivInfo['District'] = rawDistrict.string.strip()
+      indivInfo['District'] = 'MS State ' + body[0].upper() + body[1:] + ' District ' + rawDistrict.string.strip()
   if rawParty is not None:
     if rawParty.string is not None:
-      indivInfo['Party'] = rawParty.string.strip()
+      indivInfo['Party'] = partyDict[rawParty.string.strip()]
   if rawEmail is not None:
     if rawEmail.string is not None:
       indivInfo['Email'] = rawEmail.string.strip() + body + '.ms.gov'
@@ -30,7 +30,7 @@ def pullIndividual(url,name,body):
       indivInfo['Phone'] = rawPhone.string.strip()
   if rawAddress is not None:
     if rawAddress.string is not None:
-      indivInfo['Address'] = rawAddress.string.strip() + ' P.O. Box 1018 Jackson, MS 39215'
+      indivInfo['Address'] = 'Room ' + rawAddress.string.strip() + ' P.O. Box 1018 Jackson, MS 39215'
 
   indivInfo['Name'] = name
   indivInfo['Website'] = url
