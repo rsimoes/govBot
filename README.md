@@ -11,20 +11,20 @@ Attended processes are used to standardize data listed in reasonably consistent 
 Once the SL functions are complete, they will be merged into a single file which can update the more-than-7000 State Legislators.
 
 ###Current attended scripts:
-attended/FE/updatefederal.py
-attended/SL/FLHouse.py
-attended/SL/GAHouse.py
-attended/SL/GASenate.py
-attended/SL/HILeg.py
-attended/SL/INLeg.py
-attended/SL/MALeg.py
-attended/SL/MNSenate.py
+attended/FE/updatefederal.py,
+attended/SL/FLHouse.py,
+attended/SL/GAHouse.py,
+attended/SL/GASenate.py,
+attended/SL/HILeg.py,
+attended/SL/INLeg.py,
+attended/SL/MALeg.py,
+attended/SL/MNSenate.py,
 attended/SL/MSLeg.py
 
 ##Unattended scripts
 The unattended scripts download source from elected official listing pages and add them to a MYSQL database, index the current and previous page versions along with known officeholder information to identify when a presumed elected official no longer appears on a given page. Each of these scripts take several hours of uninterrupted internet access to run.
 
 ###Current unattended scripts:
-downloadpages.py
-findwordsinpages.py
-wordsfromoffices.py
+downloadpages.py,
+findwordsinpages.py,
+wordsfromoffices.py,
