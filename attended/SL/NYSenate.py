@@ -2,7 +2,6 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-
 def getContact(url):
   print url
   contactSoup = BeautifulSoup(urllib2.urlopen(url).read())

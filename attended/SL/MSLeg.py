@@ -32,8 +32,8 @@ def pullIndividual(url,name,body):
     if rawAddress.string is not None:
       indivInfo['Address'] = 'Room ' + rawAddress.string.strip() + ' P.O. Box 1018 Jackson, MS 39215'
 
-  indivInfo['Name'] = name
-  indivInfo['Website'] = url
+  indivInfo['Name'] = name.strip()
+  indivInfo['Website'] = url.strip()
 
   return indivInfo
 
