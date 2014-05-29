@@ -17,7 +17,7 @@ def getSCLeg(partyDict):
     namestring = link.string.strip()
 
     repInfo['Website'] = 'http://www.scstatehouse.gov' + link.get('href')
-    repInfo['Name'] = re.sub(r'\[.*$','',link.string.strip())
+    repInfo['Name'] = re.sub(r'\[.*$','',link.string.strip()).strip().replace('   ', ' ').replace('  ', ' ')
     repInfo['Party'] = partyDict[str(re.sub(r'^.*\[(.*)\].*$', r'\1', link.string.strip()))]
     repInfo['District'] = 'SC State House ' + re.sub(r'^.*(District [0-9]*).*$', r'\1', item.get_text())
 
@@ -29,7 +29,7 @@ def getSCLeg(partyDict):
     namestring = link.string.strip()
 
     repInfo['Website'] = 'http://www.scstatehouse.gov' + link.get('href')
-    repInfo['Name'] = re.sub(r'\[.*$','',link.string.strip())
+    repInfo['Name'] = re.sub(r'\[.*$','',link.string.strip()).strip().replace('   ', ' ').replace('  ', ' ')
     repInfo['Party'] = partyDict[str(re.sub(r'^.*\[(.*)\].*$', r'\1', link.string.strip()))]
     repInfo['District'] = 'SC State Senate ' + re.sub(r'^.*(District [0-9]*).*$', r'\1', item.get_text())
 
