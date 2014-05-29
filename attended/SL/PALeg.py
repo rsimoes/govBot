@@ -25,9 +25,9 @@ def repDownload(url):
   if rawfacebook is not None:
     facebook = rawfacebook.get('href')
   if rawtwitter is not None:
-    twitter = rawtwitter.get('href')
+    twitter = re.sub(r'^.*/(.*)$', r'\1', rawtwitter.get('href')
   
-  address = rawaddress[1] + ' ' + rawaddress[2]
+  address = rawaddress[1].strip() + ' ' + rawaddress[2].strip()
 
   return facebook, twitter, email, phone, address
 
