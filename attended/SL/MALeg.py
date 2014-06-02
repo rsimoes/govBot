@@ -3,12 +3,10 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 
-partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
-ordinalDict = {'first': '1', 'second': '2', 'third': '3', 'fourth': '4', 'fifth': '5', 'sixth': '6', 'seventh': '7', 'eighth': '8', 'ninth': '9', 'tenth': '10', 'eleventh': '11', 'twelfth': '12', 'thirteenth': '13', 'fourteenth': '14', 'fifteenth': '15', 'sixteenth': '16', 'seventeenth': '17', 'eighteenth': '18', 'nineteenth': '19', 'twentieth': '20', 'thirtieth': '30', 'fortieth': '40', 'fiftieth': '50', 'sixtieth': '60', 'seventieth': '70', 'eightieth': '80', 'ninetieth': '9', 'twenty': '2', 'thirty': '3', 'forty': '4', 'fifty': '5', 'sixty': '6', 'seventy': '7', 'eighty': '8', 'ninety': '9'}
-
-
-def getMALeg(wrtFile):
+def getMALeg(partyDict):
 ##The MA Website lacks a standard district listing, this will catch most (but not all) district names
+  ordinalDict = {'first': '1', 'second': '2', 'third': '3', 'fourth': '4', 'fifth': '5', 'sixth': '6', 'seventh': '7', 'eighth': '8', 'ninth': '9', 'tenth': '10', 'eleventh': '11', 'twelfth': '12', 'thirteenth': '13', 'fourteenth': '14', 'fifteenth': '15', 'sixteenth': '16', 'seventeenth': '17', 'eighteenth': '18', 'nineteenth': '19', 'twentieth': '20', 'thirtieth': '30', 'fortieth': '40', 'fiftieth': '50', 'sixtieth': '60', 'seventieth': '70', 'eightieth': '80', 'ninetieth': '9', 'twenty': '2', 'thirty': '3', 'forty': '4', 'fifty': '5', 'sixty': '6', 'seventy': '7', 'eighty': '8', 'ninety': '9'}
+
   houseSoup = BeautifulSoup(urllib2.urlopen('https://malegislature.gov/People/House').read())
   senateSoup = BeautifulSoup(urllib2.urlopen('https://malegislature.gov/People/Senate').read())
   
@@ -65,15 +63,16 @@ def getMALeg(wrtFile):
       repInfo['District'] = 'MA State {0} District {1}'.format(branch, townName)
       
     dictList.append(repInfo)
-  
-  with open(wrtFile, 'w') as csvFile:
+
+  return dictList
+
+if __name__ == '__main__':
+  partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
+  dictList = getMALeg(partyDict)
+  with open('/home/michael/Desktop/MALeg.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Website', 'Email', 'Phone', 'Address'], restval='')
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
-
-  return dictList
-
-if __name__ == '__main__':
-  getMALeg('/home/michael/Desktop/MALeg.csv')
+  getMALeg()
