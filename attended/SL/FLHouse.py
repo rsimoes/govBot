@@ -2,9 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-partyDict = {'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent'}
-
-def getFLHouse(wrtFile):
+def getFLHouse(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://www.myfloridahouse.gov/Sections/Representatives/representatives.aspx?SortField=district&SortDirection=asc&LegislativeTermId=85&LastSortField=name').read())
   rawReps = soup.find_all('div', {'class': 'rep_style'})
   rawDistricts = soup.find_all('div', {'class': 'district_style'})
@@ -38,13 +36,15 @@ def getFLHouse(wrtFile):
       repDict['Website'] = website
       dictList.append(repDict)
 
-  print len(dictList)
-  with open(wrtFile, 'w') as csvFile:
+  return dictList
+
+if __name__ ==  '__main__':
+  partyDict = {'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent'}
+  dictList = getFLHouse(partyDict)
+
+  with open('/home/michael/Desktop/FLHouse.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Website'])
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
-
-if __name__ == '__main__':
-  getFLHouse('/home/michael/Desktop/FLHouse.csv')
