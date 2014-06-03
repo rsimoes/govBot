@@ -2,21 +2,6 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-def getAZrep(url):
-  print url
-  email = ''
-  response = urllib2.urlopen(url)
-
-  if response.code == 200:
-    soup = BeautifulSoup(response.read())
-
-    tempEmail = soup.find('a', {'href': re.compile('mailto')})
-    if tempEmail is not None:
-      email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', tempEmail.get('href'))
-
-  return email
-
-
 def getAZLeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://www.azleg.gov/MemberRoster.asp?Body=H').read())
   senateSoup = BeautifulSoup(urllib2.urlopen('http://www.azleg.gov/MemberRoster.asp?Body=S').read())
