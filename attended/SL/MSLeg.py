@@ -2,10 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-
-partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
-
-def pullIndividual(url,name,body):
+def pullIndividual(url, name, body):
   print url
   indivSoup = BeautifulSoup(urllib2.urlopen(url).read())
   indivInfo = {}
@@ -38,7 +35,7 @@ def pullIndividual(url,name,body):
   return indivInfo
 
 
-def getMSLeg(wrtFile):
+def getMSLeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://billstatus.ls.state.ms.us/members/hr_membs.xml').read())
   senateSoup = BeautifulSoup(urllib2.urlopen('http://billstatus.ls.state.ms.us/members/ss_membs.xml').read())
   
@@ -56,15 +53,17 @@ def getMSLeg(wrtFile):
   for memberGroup in senateSoup.find_all('member'):
     for i in range(1, 5):
       dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + memberGroup.find('m{0}_link'.format(i)).string.strip(), memberGroup.find('m{0}_name'.format(i)).string.strip(), 'senate'))
-  
-  with open(wrtFile, 'w') as csvFile:
+
+  return dictList
+
+if __name__ == '__main__':
+  partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
+
+  getMSLeg(partyDict)
+
+    with open('/home/michael/Desktop/MSLeg.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Website', 'Email', 'Phone', 'Address'], restval='')
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
-
-  return dictList
-
-if __name__ == '__main__':
-  getMSLeg('/home/michael/Desktop/MSLeg.csv')
