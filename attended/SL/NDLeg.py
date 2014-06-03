@@ -2,9 +2,6 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-
-partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
-
 def getNDLeg(wrtFile):
   soup = BeautifulSoup(urllib2.urlopen('http://www.legis.nd.gov/assembly/63-2013/members/').read())
   
@@ -34,15 +31,16 @@ def getNDLeg(wrtFile):
     
     dictList.append(repInfo)
 
-  
-  with open(wrtFile, 'w') as csvFile:
+  return dictList
+
+if __name__ == '__main__':
+  partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
+
+  getNDLeg(partyDict)
+
+  with open('/home/michael/Desktop/NDLeg.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Website', 'Email', 'Phone', 'Address'], restval='')
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
-
-  return dictList
-
-if __name__ == '__main__':
-  getNDLeg('/home/michael/Desktop/NDLeg.csv')

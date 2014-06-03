@@ -21,7 +21,7 @@ def getRep(url):
   return DOB, Address, Phone   
       
 
-def getNJLeg():
+def getNJLeg(partyDict):
   url = 'http://www.njleg.state.nj.us/members/roster.asp'
   
   dictList = []

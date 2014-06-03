@@ -2,7 +2,6 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-
 def getNYAssembly(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://assembly.state.ny.us/mem/?sh=email').read())
   table = soup.find_all('div', {'class': re.compile('^email(1|2|3|clear)')})
