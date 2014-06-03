@@ -71,6 +71,5 @@ if __name__ == '__main__':
     dwObject.writeheader()
     
     for row in dictList:
-      print row
       dwObject.writerow(row)
 
