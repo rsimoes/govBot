@@ -2,9 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-partyDict = {'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent', 'DFL': 'Democratic-Farmer Labor'}
-
-def getMNSenate(wrtFile):
+def getMNSenate(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://www.senate.leg.state.mn.us/members/index.php?ls=#dist').read())
   table = soup.find('div', {'id': 'hide_show_alpha_all'})
   links = table.find_all('a')
@@ -21,14 +19,18 @@ def getMNSenate(wrtFile):
       dictList.append(repInfo)
 
   print len(dictList)
-  with open(wrtFile, 'w') as csvFile:
+
+
+  return dictList
+
+if __name__ == '__main__':
+  partyDict = {'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent', 'DFL': 'Democratic-Farmer Labor'}
+
+  dictList = getMNSenate(partyDict)
+
+  with open('/home/michael/Desktop/MNSenate.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Website', 'Party'])
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
-
-  return dictList
-
-if __name__ == '__main__':
-  getMNSenate('/home/michael/Desktop/MNSenate.csv')
