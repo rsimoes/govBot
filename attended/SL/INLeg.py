@@ -2,8 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-
-def getINLeg(wrtFile):
+def getINLeg(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://iga.in.gov/legislative/2014/legislators/').read())
   dictList = []
   
@@ -41,15 +40,16 @@ def getINLeg(wrtFile):
     repInfo['Website'] = 'http://iga.in.gov' + rep.get('value')
     
     dictList.append(repInfo)
-  
-  with open(wrtFile, 'w') as csvFile:
+
+  return dictList
+
+if __name__ == '__main__':
+  dictList = getINLeg("")
+
+  with open('/home/michael/Desktop/INLeg.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Website'])
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
 
-  return dictList
-
-if __name__ == '__main__':
-  getINLeg('/home/michael/Desktop/INLeg.csv')

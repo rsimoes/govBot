@@ -2,7 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-partyDict = {'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
+
 
 def getGAHouse(wrtFile):
   soup = BeautifulSoup(urllib2.urlopen('http://www.house.ga.gov/Representatives/en-US/HouseMembersList.aspx').read())
@@ -32,13 +32,16 @@ def getGAHouse(wrtFile):
     repInfo['Website'] = 'http://www.house.ga.gov/Representatives/en-US' + re.sub("^\\.", "", relativeWebsite)
     dictList.append(repInfo)
 
-  print len(dictList)
-  with open(wrtFile, 'w') as csvFile:
+  return dictList
+
+
+if __name__ == '__main__':
+  partyDict = {'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
+  dictList = getGAHouse(partyDict)
+
+  with open('/home/michael/Desktop/GAHouse.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Website', 'Party'])
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
-
-if __name__ == '__main__':
-  getGAHouse('/home/michael/Desktop/GAHouse.csv')

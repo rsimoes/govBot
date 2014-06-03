@@ -2,9 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-partyDict = {'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
-
-def getGASenate(wrtFile):
+def getGASenate(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://www.senate.ga.gov/senators/en-US/SenateMembersList.aspx').read())
   table = soup.find('div', {'style': 'font-size:13px;'})
   firstCol = table.find_all('span', {'style': 'float:left; width:50%; border:1px solid #999999; border-bottom:0px; padding:3px;'})
@@ -47,15 +45,15 @@ def getGASenate(wrtFile):
     repInfo['Website'] = 'http://www.senate.ga.gov/senators/en-US' + re.sub("^\\.", "", relativeWebsite)
     dictList.append(repInfo)
 
-  print len(dictList)
-  with open(wrtFile, 'w') as csvFile:
+  return dictList
+
+if __name__ == '__main__':
+  partyDict = {'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
+  dictList = getGASenate(partyDict)
+
+  with open('/home/michael/Desktop/GASenate.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Website', 'Party'])
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
-
-  return dictList
-
-if __name__ == '__main__':
-  getGASenate('/home/michael/Desktop/GASenate.csv')

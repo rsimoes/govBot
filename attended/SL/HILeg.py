@@ -2,9 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
-
-def getHILeg(wrtFile):
+def getHILeg(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://www.capitol.hawaii.gov/members/legislators.aspx?chamber=all').read())
   bodyDict = {'H': 'House', 'S': 'Senate'}
   dictList = []
@@ -77,14 +75,16 @@ def getHILeg(wrtFile):
     
     dictList.append(repInfo)
 
-  with open(wrtFile, 'w') as csvFile:
+  return dictList
+
+if __name__ == '__main__':
+  partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
+
+  dictList = getHILeg(partyDict)
+
+  with open('/home/michael/Desktop/HILeg.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Phone', 'Address', 'Website', 'Email', 'Facebook', 'Twitter', 'Youtube'])
     dwObject.writeheader()
     
     for row in dictList:
       dwObject.writerow(row)
-
-  return dictList
-
-if __name__ == '__main__':
-  getHILeg('/home/michael/Desktop/HILeg.csv')
