@@ -71,4 +71,3 @@ if __name__ == '__main__':
     
     for row in dictList:
       dwObject.writerow(row)
-
