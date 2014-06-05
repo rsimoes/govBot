@@ -2,8 +2,6 @@ import urllib2, urllib, re, xlrd
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-#todo: figure out why bs4 is misparsing table rows and table bodies and omitting websites. Fix.
-
 def getRILeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://webserver.rilin.state.ri.us/Email/RepEmailListDistrict.asp', 'lxml').read())
   senateSoup = BeautifulSoup(urllib2.urlopen('http://webserver.rilin.state.ri.us/Email/SenEmailListDistrict.asp', 'lxml').read())
