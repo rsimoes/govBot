@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getAZLeg(partyDict):
-  houseSoup = BeautifulSoup(urllib2.urlopen('http://www.azleg.gov/MemberRoster.asp?Body=H').read())
-  senateSoup = BeautifulSoup(urllib2.urlopen('http://www.azleg.gov/MemberRoster.asp?Body=S').read())
+  houseSoup = BeautifulSoup(urllib2.urlopen('http://assembly.ca.gov/assemblymembers').read())
+  senateSoup = BeautifulSoup(urllib2.urlopen('http://senate.ca.gov/senators').read())
 
   houseTable = houseSoup.find('table', {'id': 'house'}).find_all('tr')
   senateTable = senateSoup.find('table', {'id': 'senate'}).find_all('tr')
@@ -29,7 +29,7 @@ def getAZLeg(partyDict):
     dictList.append(repInfo)
 
   for i in range(1, len(senateTable)):
-    item = houseTable[i]
+    item = senateTable[i]
     repInfo = {}
 
     columns = item.find_all('td')
