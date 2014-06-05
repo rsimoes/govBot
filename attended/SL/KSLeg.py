@@ -7,7 +7,7 @@ def getKSRep(url, partyDict):
   soup = BeautifulSoup(urllib2.urlopen(url).read(), 'lxml')
   main = soup.find('div', {'id': 'main'})
 
-  name = re.sub('(Representative)|(Senator)', '', main.find('h1').get_text()).strip()
+  name = re.sub('(Representative)|(Senator)', '', main.find('h1').get_text()).split(' - ')[0].strip()
   party = partyDict[str(re.sub(r'^.*Party:\s([A-Za-z]*)\s.*$', r'\1', main.find('h3').get_text()))]
 
   return name, party
