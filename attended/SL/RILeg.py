@@ -5,8 +5,8 @@ from csv import DictWriter
 #todo: figure out why bs4 is misparsing table rows and table bodies and omitting websites. Fix.
 
 def getRILeg(partyDict):
-  houseSoup = BeautifulSoup(urllib2.urlopen('http://webserver.rilin.state.ri.us/Email/RepEmailListDistrict.asp').read())
-  senateSoup = BeautifulSoup(urllib2.urlopen('http://webserver.rilin.state.ri.us/Email/SenEmailListDistrict.asp').read())
+  houseSoup = BeautifulSoup(urllib2.urlopen('http://webserver.rilin.state.ri.us/Email/RepEmailListDistrict.asp', 'lxml').read())
+  senateSoup = BeautifulSoup(urllib2.urlopen('http://webserver.rilin.state.ri.us/Email/SenEmailListDistrict.asp', 'lxml').read())
 
   houseTable = houseSoup.find('tbody').find_all('tr')
   senateTable = senateSoup.find('tbody').find_all('tr')
@@ -14,10 +14,9 @@ def getRILeg(partyDict):
   dictList = []
 
   for item in houseTable:
-    print item
     repInfo = {}
     repInfo['District'] = 'RI State House District ' + item.find('td', {'width': '43'}).string.strip()
-    repInfo['Name'] = item.find('td', {'width': '311'}).string.strip()
+    repInfo['Name'] = item.find('td', {'width': '311'}).string.replace('Rep.', '').strip()
     repInfo['Website'] = item.find('td', {'width': '72'}).find('a').get('href')
     repInfo['Email'] = item.find('a', {'href': re.compile('[Mm]ail[Tt]o')}).string.strip()
     repInfo['Phone'] = item.find('td', {'width': '130'}).string.strip()
@@ -27,7 +26,7 @@ def getRILeg(partyDict):
   for item in senateTable:
     repInfo = {}
     repInfo['District'] = 'RI State Senate District ' + item.find('td', {'width': '43'}).string.strip()
-    repInfo['Name'] = item.find('td', {'width': '311'}).string.strip()
+    repInfo['Name'] = item.find('td', {'width': '311'}).string.replace('Senator', '').strip()
     repInfo['Website'] = item.find('td', {'width': '72'}).find('a').get('href')
     repInfo['Email'] = item.find('a', {'href': re.compile('[Mm]ail[Tt]o')}).string.strip()
     repInfo['Phone'] = item.find('td', {'width': '130'}).string.strip()
