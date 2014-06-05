@@ -54,7 +54,6 @@ def getIDLeg(partyDict):
 
     repInfo['Email'] = emailDict['legislators.email{0}'.format(emailID)]
 
-    counter += 1
     dictList.append(repInfo)
 
   return dictList
