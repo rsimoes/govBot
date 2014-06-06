@@ -38,7 +38,7 @@ def getLALeg(partyDict):
     repInfo['Party'] = repParties[rawName]
     repInfo['District'] = 'LA State House District {0}'.format(columns[1].get_text().strip())
     repInfo['Website'] = 'http://house.louisiana.gov/' + link.get('href').replace('..', '')
-    repInfo['Address'] = columns[2].get_text().replace('\n', ' ').replace('\r', ' ').strip()
+    repInfo['Address'] = columns[2].get_text().replace('\n', ' ').replace('\r', ' ').replace('   ', ' ').replace('  ', ' ').strip()
     repInfo['Phone'] = columns[3].get_text().strip()
     repInfo['Email'] = columns[4].get_text().strip()
 
