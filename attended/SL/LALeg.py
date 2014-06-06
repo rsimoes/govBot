@@ -2,7 +2,6 @@ import urllib2, urllib, re, xlrd,time
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-
 def getLALeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://house.louisiana.gov/H_Reps/H_Reps_FullInfo.asp').read(), 'lxml')
   housePartySoup = BeautifulSoup(urllib2.urlopen('http://house.louisiana.gov/H_Reps/H_Reps_ByParty.asp').read(), 'lxml')
