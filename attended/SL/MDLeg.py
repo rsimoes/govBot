@@ -39,7 +39,7 @@ def getMDLeg(partyDict):
     if len(nameList) == 2:
       name = nameList[1].strip() + ' ' + nameList[0].strip()
     elif len(nameList) == 3:
-      name = nameList[2].strip() + ' ' + nameList[0].strip() + ' ' + nameList[1].strip()
+      name = nameList[1].strip() + ' ' + nameList[0].strip() + ' ' + nameList[2].strip()
     else:
       name = rawName
 
@@ -62,7 +62,7 @@ def getMDLeg(partyDict):
     if len(nameList) == 2:
       name = nameList[1].strip() + ' ' + nameList[0].strip()
     elif len(nameList) == 3:
-      name = nameList[2].strip() + ' ' + nameList[0].strip() + ' ' + nameList[1].strip()
+      name = nameList[1].strip() + ' ' + nameList[0].strip() + ' ' + nameList[2].strip()
     else:
       name = rawName
 
