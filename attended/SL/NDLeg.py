@@ -2,7 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-def getNDLeg(wrtFile):
+def getNDLeg(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://www.legis.nd.gov/assembly/63-2013/members/').read())
   
   firstMember = soup.find_all('div', {'class': 'member-img-list first odd'})

@@ -3,8 +3,6 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getIDLeg(partyDict):
-
-
   houseSoup = BeautifulSoup(urllib2.urlopen('http://legislature.idaho.gov/house/membership.cfm').read())
   senateSoup = BeautifulSoup(urllib2.urlopen('http://legislature.idaho.gov/senate/membership.cfm').read())
 

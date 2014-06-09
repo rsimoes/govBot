@@ -2,9 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-
-
-def getGAHouse(wrtFile):
+def getGAHouse(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://www.house.ga.gov/Representatives/en-US/HouseMembersList.aspx').read())
   table = soup.find('div', {'style': 'font-size:13px;'}).find_all('span')
   dictList = []

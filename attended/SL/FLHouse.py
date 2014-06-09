@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getFLHouse(partyDict):
-  soup = BeautifulSoup(urllib2.urlopen('http://www.myfloridahouse.gov/Sections/Representatives/representatives.aspx?SortField=district&SortDirection=asc&LegislativeTermId=85&LastSortField=name').read())
+  soup = BeautifulSoup(urllib2.urlopen('http://www.myfloridahouse.gov/Sections/Representatives/representatives.aspx?SortField=district&SortDirection=asc&LegislativeTermId=85&LastSortField=Name').read())
   rawReps = soup.find_all('div', {'class': 'rep_style'})
   rawDistricts = soup.find_all('div', {'class': 'district_style'})
   rawParties = soup.find_all('div', {'class': 'party_style'})

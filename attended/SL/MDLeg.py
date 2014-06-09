@@ -1,4 +1,4 @@
-import urllib2, urllib, re, xlrd,time
+import urllib2, urllib, re, xlrd, time
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
