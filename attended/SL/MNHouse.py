@@ -16,7 +16,7 @@ def getMNHouse(partyDict):
       repInfo['District'] = 'MN State House District ' + str(identity.split("(")[1].split(",")[0].strip())
       repInfo['Name'] = identity.split("(")[0].strip().replace("   ", " ").replace("  ", " ")
       repInfo['Party'] = partyDict[identity.split(',')[len(identity.split(','))-1].strip().replace(')','')]
-      repInfo['Website'] = 'http://www.senate.leg.state.mn.us' + link.get('href')
+      repInfo['Website'] = 'http://www.house.leg.state.mn.us' + link.get('href')
       dictList.append(repInfo)
 
   return dictList
