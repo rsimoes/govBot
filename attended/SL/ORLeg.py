@@ -63,7 +63,6 @@ def getORLeg(partyDict):
     rawDist = re.sub(re.compile(r'^.*District: .*?([0-9]*).*$', re.DOTALL), r'\1', partyDist)
 
     repInfo['District'] = 'OR State House District {0}'.format(rawDist)
-    print str(links[0].get('href')[:4])
     
     if str(relativeLocation) != 'http://www.oregonlegislature.gov/':
       if str(links[0].get('href')[:4]) == 'http':
@@ -94,5 +93,4 @@ if __name__ == "__main__":
     dwObject.writeheader()
 
     for row in dictList:
-      print row
       dwObject.writerow(row)                                
