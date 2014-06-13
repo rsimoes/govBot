@@ -37,11 +37,11 @@ def getORLeg(partyDict):
     if str(relativeLocation) != 'http://www.oregonlegislature.gov/':
       if str(links[0].get('href')[:4]) == 'http':
         repInfo['Party'] = partyDict[str(re.sub(r'^.*Party: ([RD][a-z]*).*?$', r'\1', partyDist))]
-        repInfo['Name'] = links[0].get_text().replace('Senator', '').replace(u'\u20ac', '').replace(u'\u2039', '').replace("'", '').replace(u'\u00a0', ' ').strip()
+        repInfo['Name'] = links[0].get_text().replace('Representative', '').replace(u'\u20ac', '').replace(u'\u2039', '').replace("'", '').replace(u'\u00a0', ' ').strip()
         repInfo['Website'] = links[0].get('href')
       else:
         repInfo['Party'] = partyDict[str(re.sub(r'^.*Party: ([RD][a-z]*).*?$', r'\1', partyDist))]
-        repInfo['Name'] = links[0].get_text().replace('Senator', '').replace(u'\u20ac', '').replace(u'\u2039', '').replace("'", '').replace(u'\u00a0', ' ').strip()
+        repInfo['Name'] = links[0].get_text().replace('Representative', '').replace(u'\u20ac', '').replace(u'\u2039', '').replace("'", '').replace(u'\u00a0', ' ').strip()
         repInfo['Website'] = 'https://www.oregonlegislature.gov' + links[0].get('href')
     else:
       repInfo['Name'] = 'VACANT'
