@@ -4,8 +4,6 @@ from csv import DictWriter
 
 
 def getVTLeg(partyDict):
-  buildingDict = {'LP': 'Legislative Plaza', 'WMB': 'War Memorial Building'}
-
   houseSoup = BeautifulSoup(urllib2.urlopen('http://www.leg.state.vt.us/legdir/districts.cfm?Body=H').read(), 'lxml')
   senateSoup = BeautifulSoup(urllib2.urlopen('http://www.leg.state.vt.us/legdir/districts.cfm?Body=S').read(), 'lxml')
   
