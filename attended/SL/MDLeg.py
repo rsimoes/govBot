@@ -13,7 +13,7 @@ def getMDRep(url, partyDict):
   party = table[5].find('td').get_text().strip()
 
   if emailLink is not None:
-    email = emailLink.get_text().strip()
+    email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', emailLink.get_text().strip())
 
   return party, email
 
