@@ -24,7 +24,7 @@ def getHILeg(partyDict):
     rawDistrict = soup.find('span', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_LabelDistrict'.format(i)})
 
     if rawDistrict is not None and rawBody is not None:
-      repInfo['District'] = 'HI State {0} District {1}'.format(bodyDict[rawBody.string.strip()], rawDistrict.string.strip())
+      repInfo['District'] = 'HI State {0} District {1}'.format(bodyDict[str(rawBody.string.strip()).upper()], rawDistrict.string.strip())
     else:
       repInfo['District'] = ''
     if mainLink.string is not None:
