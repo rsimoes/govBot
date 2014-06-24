@@ -2,9 +2,24 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
+def getAZrep(url):
+  print url
+  email = ''
+  response = urllib2.urlopen(url)
+
+  if response.code == 200:
+    soup = BeautifulSoup(response.read())
+
+    tempEmail = soup.find('a', {'href': re.compile('mailto')})
+    if tempEmail is not None:
+      email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', tempEmail.get('href'))
+
+  return email
+
+
 def getAZLeg(partyDict):
-  houseSoup = BeautifulSoup(urllib2.urlopen('http://assembly.ca.gov/assemblymembers').read())
-  senateSoup = BeautifulSoup(urllib2.urlopen('http://senate.ca.gov/senators').read())
+  houseSoup = BeautifulSoup(urllib2.urlopen('http://www.azleg.gov/MemberRoster.asp?Body=H').read())
+  senateSoup = BeautifulSoup(urllib2.urlopen('http://www.azleg.gov/MemberRoster.asp?Body=S').read())
 
   houseTable = houseSoup.find('table', {'id': 'house'}).find_all('tr')
   senateTable = senateSoup.find('table', {'id': 'senate'}).find_all('tr')
@@ -29,7 +44,7 @@ def getAZLeg(partyDict):
     dictList.append(repInfo)
 
   for i in range(1, len(senateTable)):
-    item = senateTable[i]
+    item = houseTable[i]
     repInfo = {}
 
     columns = item.find_all('td')
