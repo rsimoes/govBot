@@ -4,7 +4,7 @@ from csv import DictWriter
 
 
 def getWILeg(partyDict):
-  houseSoup = BeautifulSoup(urllib2.urlopen('http://asm.leg.state.nv.us/Assembly/AssemblyMembersM.aspx').read(), 'lxml')
+  houseSoup = BeautifulSoup(urllib2.urlopen('http://legis.wisconsin.gov/Pages/leg-list.aspx?h=a').read(), 'lxml')
   senateSoup = BeautifulSoup(urllib2.urlopen('http://legis.wisconsin.gov/Pages/leg-list.aspx?h=s').read(), 'lxml')
   
   houseTable = houseSoup.find('table', {'class': 'legis-list'}).find_all('tr')
