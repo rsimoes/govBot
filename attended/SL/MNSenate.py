@@ -18,9 +18,6 @@ def getMNSenate(partyDict):
       repInfo['Website'] = 'http://www.senate.leg.state.mn.us' + link.get('href')
       dictList.append(repInfo)
 
-  print len(dictList)
-
-
   return dictList
 
 if __name__ == '__main__':
