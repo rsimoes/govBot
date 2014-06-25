@@ -45,6 +45,7 @@ def getALLeg(partyDict):
     else:
       repInfo['Name'] = link.string.strip().title()
 
+    repInfo['Name'] = repInfo['Name'].replace('Jr.', '').strip().replace('  ', ' ')
     repInfo['Party'] = partyDict[str(columns[1].get_text().strip())]
     repInfo['District'] = 'AL State House District {0}'.format(columns[2].get_text().strip())
     repInfo['Address'] = 'Room {0} 11 South Union Street Montomery, AL 36130'.format(columns[3].get_text().strip())
@@ -71,6 +72,7 @@ def getALLeg(partyDict):
     else:
       repInfo['Name'] = link.string.strip().title()
 
+    repInfo['Name'] = repInfo['Name'].replace('Jr.', '').strip().replace('  ', ' ')
     repInfo['Party'] = partyDict[str(columns[1].get_text().strip())]
     repInfo['District'] = 'AL State Senate District {0}'.format(columns[2].get_text().strip())
     repInfo['Address'] = 'Room {0} 11 South Union Street Montomery, AL 36130'.format(columns[3].get_text().strip())
