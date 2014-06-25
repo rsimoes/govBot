@@ -23,7 +23,7 @@ def getVALeg(partyDict):
     if len(nameList) == 2:
       repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip()
     elif len(nameList) == 3:
-      repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip() + nameList[2].strip()
+      repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip() + ' ' + nameList[2].strip()
     else:
       repInfo['Name'] = columns[0].get_text().strip()
 
@@ -46,7 +46,7 @@ def getVALeg(partyDict):
       if len(nameList) == 2:
         repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip()
       elif len(nameList) == 3:
-        repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip() + nameList[2].strip()
+        repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip() + ' ' + nameList[2].strip()
       else:
         repInfo['Name'] = columns[0].get_text().strip()
 
