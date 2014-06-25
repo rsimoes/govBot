@@ -4,7 +4,13 @@ from csv import DictWriter
 
 def getTXRep(url, partyDict, body):
   print url
-  soup = BeautifulSoup(urllib2.urlopen(url), 'lxml')
+  check = True
+
+  while check:
+    response = urllib2.urlopen(url)
+    if response.code == 200:
+      check = False
+  soup = BeautifulSoup(response.read(), 'lxml')
   distSpan = soup.find('span', {'id': 'lblDistrict'})
 
   district = ''
