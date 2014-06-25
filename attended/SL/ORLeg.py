@@ -62,7 +62,7 @@ def getORLeg(partyDict):
     relativeLocation = links[0].get('href')
     rawDist = re.sub(re.compile(r'^.*District: .*?([0-9]*).*$', re.DOTALL), r'\1', partyDist)
 
-    repInfo['District'] = 'OR State House District {0}'.format(rawDist)
+    repInfo['District'] = 'OR State Senate District {0}'.format(rawDist)
     
     if str(relativeLocation) != 'http://www.oregonlegislature.gov/':
       if str(links[0].get('href')[:4]) == 'http':

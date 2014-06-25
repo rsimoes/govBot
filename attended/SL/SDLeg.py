@@ -29,7 +29,7 @@ def getSDLeg(partyDict):
 
       repInfo['Website'] = 'http://legis.sd.gov/Legislators/Legislators/' + link.get('href')
       repInfo['Party'] = partyDict[str(columns[2].get_text().strip())]
-      repInfo['District'] = 'SD State House District {0}'.format(columns[1].get_text().strip())
+      repInfo['District'] = 'SD State House District {0}'.format(re.sub('^0','',columns[1].get_text().strip()))
       repInfo['Address'] = '{0} {1}, SD {2}'.format(columns[3].get_text().strip(), columns[4].get_text().strip(), columns[5].get_text().strip(), )
 
       dictList.append(repInfo)
@@ -53,7 +53,7 @@ def getSDLeg(partyDict):
 
       repInfo['Website'] = 'http://legis.sd.gov/Legislators/Legislators/' + link.get('href')
       repInfo['Party'] = partyDict[str(columns[2].get_text().strip())]
-      repInfo['District'] = 'SD State Senate District {0}'.format(columns[1].get_text().strip())
+      repInfo['District'] = 'SD State Senate District {0}'.format(re.sub('^0','',columns[1].get_text().strip()))
       repInfo['Address'] = '{0} {1}, SD {2}'.format(columns[3].get_text().strip(), columns[4].get_text().strip(), columns[5].get_text().strip(), )
 
       dictList.append(repInfo)
