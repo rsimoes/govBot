@@ -24,7 +24,7 @@ def getTNLeg(partyDict):
     if len(nameList) == 2:
       repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip()
     elif len(nameList) == 3:
-      repInfo['Name'] = nameList[2].strip() + ' ' + nameList[0].strip() + ' ' + nameList[1].strip()
+      repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip() + ' ' + nameList[2].strip()
     else:
       repInfo['Name'] = link.get_text().strip()
 
@@ -51,7 +51,7 @@ def getTNLeg(partyDict):
     if len(nameList) == 2:
       repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip()
     elif len(nameList) == 3:
-      repInfo['Name'] = nameList[2].strip() + ' ' + nameList[0].strip() + ' ' + nameList[1].strip()
+      repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip() + ' ' + nameList[2].strip()
     else:
       repInfo['Name'] = link.get_text().strip()
 

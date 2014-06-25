@@ -32,7 +32,7 @@ def getDELeg(partyDict):
     link = columns[0].find('a')
 
     repInfo['Website'] = 'http://legis.delaware.gov' + link.get('href')
-    repInfo['Name'] = link.get_text().strip()
+    repInfo['Name'] = link.get_text().strip().replace('  ', ' ')
     repInfo['District'] = 'DE State House District {0}'.format(columns[2].get_text().strip())
 
     repInfo['Party'], repInfo['Phone'], repInfo['Address'], repInfo['Email'] = getDERep(repInfo['Website'], partyDict)
@@ -46,7 +46,7 @@ def getDELeg(partyDict):
     link = columns[0].find('a')
 
     repInfo['Website'] = 'http://legis.delaware.gov' + link.get('href')
-    repInfo['Name'] = link.get_text().strip()
+    repInfo['Name'] = link.get_text().strip().replace('  ', ' ')
     repInfo['District'] = 'DE State Senate District {0}'.format(columns[2].get_text().strip())
 
     repInfo['Party'], repInfo['Phone'], repInfo['Address'], repInfo['Email'] = getDERep(repInfo['Website'], partyDict)
