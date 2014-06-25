@@ -29,7 +29,7 @@ def getMOLeg(partyDict):
 
     repInfo['District'] = 'MO State House District {0}'.format(int(columns[2].get_text().strip()))
     repInfo['Party'] = partyDict[str(columns[3].get_text().strip())]
-    repInfo['Name'] = '{0} {1}'.format(columns[1].get_text().strip(), columns[0].get_text().strip())
+    repInfo['Name'] = '{0} {1}'.format(columns[1].get_text().strip(), columns[0].get_text().strip()).strip()
     repInfo['Website'] = 'http://www.house.mo.gov/member.aspx?year=2014&district=' + columns[2].get_text().strip()
     repInfo['Phone'] = columns[4].get_text().strip()
     repInfo['Address'] = '201 West Capitol Avenue Room {0} Jefferson City, MO 65101'.format(columns[5].get_text().strip())
