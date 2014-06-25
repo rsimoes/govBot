@@ -2,7 +2,7 @@ import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
-def pullIndividual(url, name, body):
+def pullIndividual(url, name, body, partyDict):
   print url
   indivSoup = BeautifulSoup(urllib2.urlopen(url).read())
   indivInfo = {}
@@ -41,27 +41,27 @@ def getMSLeg(partyDict):
   
   dictList = []
   
-  dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + houseSoup.find('chair_link').string.strip(), houseSoup.find('chair_name').string.strip(), 'house'))
-  dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + houseSoup.find('protemp_link').string.strip(), houseSoup.find('protemp_name').string.strip(), 'house'))
+  dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + houseSoup.find('chair_link').string.strip(), houseSoup.find('chair_name').string.strip(), 'house', partyDict))
+  dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + houseSoup.find('protemp_link').string.strip(), houseSoup.find('protemp_name').string.strip(), 'house', partyDict))
 
   for memberGroup in houseSoup.find_all('member'):
     for i in range(1, 6):
-      dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + memberGroup.find('m{0}_link'.format(i)).string.strip(), memberGroup.find('m{0}_name'.format(i)).string.strip(), 'house'))
+      dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + memberGroup.find('m{0}_link'.format(i)).string.strip(), memberGroup.find('m{0}_name'.format(i)).string.strip(), 'house', partyDict))
 
-  dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + senateSoup.find('protemp_link').string.strip(), senateSoup.find('protemp_name').string.strip(), 'senate'))
+  dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + senateSoup.find('protemp_link').string.strip(), senateSoup.find('protemp_name').string.strip(), 'senate', partyDict))
   
   for memberGroup in senateSoup.find_all('member'):
     for i in range(1, 5):
-      dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + memberGroup.find('m{0}_link'.format(i)).string.strip(), memberGroup.find('m{0}_name'.format(i)).string.strip(), 'senate'))
+      dictList.append(pullIndividual('http://billstatus.ls.state.ms.us/members/' + memberGroup.find('m{0}_link'.format(i)).string.strip(), memberGroup.find('m{0}_name'.format(i)).string.strip(), 'senate', partyDict))
 
   return dictList
 
 if __name__ == '__main__':
   partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
 
-  getMSLeg(partyDict)
+  dictList = getMSLeg(partyDict)
 
-    with open('/home/michael/Desktop/MSLeg.csv', 'w') as csvFile:
+  with open('/home/michael/Desktop/MSLeg.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Website', 'Email', 'Phone', 'Address'], restval='')
     dwObject.writeheader()
     

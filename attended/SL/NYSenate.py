@@ -1,4 +1,4 @@
-NYimport urllib2, re
+import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
@@ -79,7 +79,6 @@ def getNYSenate(partyDict):
 
     dictList.append(repInfo)
 
-  print len(dictList)
   return dictList
 
 if __name__ == '__main__':
