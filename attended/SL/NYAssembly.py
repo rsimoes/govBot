@@ -36,8 +36,6 @@ def getNYAssembly(partyDict):
     else:
       dictList.append(repInfo)
 
-  print len(dictList)
-
   return dictList
 
 if __name__ == '__main__':
