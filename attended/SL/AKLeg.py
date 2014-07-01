@@ -4,7 +4,14 @@ from csv import DictWriter
 
 def getAKrep(url):
   print url
-  soup = BeautifulSoup(urllib2.urlopen(url).read()).find('div', {'id': 'fullpage'})
+  check = True
+
+  while check:
+    response = urllib2.urlopen(url)
+    if response.code == 200:
+      check = False
+
+  soup = BeautifulSoup(response.read()).find('div', {'id': 'fullpage'})
 
   district = re.sub(r'^.*District: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))
   party = re.sub(r'^.*Party: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))

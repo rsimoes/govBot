@@ -4,7 +4,16 @@ from csv import DictWriter
 
 def getKSRep(url, partyDict):
   print url
-  soup = BeautifulSoup(urllib2.urlopen(url).read(), 'lxml')
+  check = True
+  while check:
+    try:
+      response = urllib2.urlopen(url)
+      if response.code == 200:
+        check = False
+    except:
+      pass
+
+  soup = BeautifulSoup(response.read(), 'lxml')
   main = soup.find('div', {'id': 'main'})
 
   name = re.sub('(Representative)|(Senator)', '', main.find('h1').get_text()).split(' - ')[0].strip().replace('  ', ' ')
