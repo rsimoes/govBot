@@ -4,7 +4,16 @@ from csv import DictWriter
 
 def getNCRep(url):
   print url
-  soup = BeautifulSoup(urllib2.urlopen(url).read())
+  check = True
+
+  while check:
+    try:
+      response = urllib2.urlopen(url)
+      if response.code == 200:
+        check = False
+    except:
+      pass
+  soup = BeautifulSoup(response.read())
   emailLink = soup.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]:')})
   email = ''
 

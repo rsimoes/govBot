@@ -1,10 +1,20 @@
 import urllib2, re
 from bs4 import BeautifulSoup
-from csv import DictWriter
+from csv import DictWritery
 
 def pullIndividual(url, name, body, partyDict):
   print url
-  indivSoup = BeautifulSoup(urllib2.urlopen(url).read())
+  check = True
+
+  while check:
+    try:
+      response = urllib2.urlopen(url)
+      if response.code == 200:
+        check = False
+    except:
+      pass
+
+  indivSoup = BeautifulSoup(response.read())
   indivInfo = {}
   
   rawDistrict = indivSoup.find('district')
