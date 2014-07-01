@@ -7,10 +7,12 @@ def getAKrep(url):
   check = True
 
   while check:
-    response = urllib2.urlopen(url)
-    if response.code == 200:
-      check = False
-
+    try:
+      response = urllib2.urlopen(url, timeout = 10)
+      if response.code == 200:
+        check = False
+    except:
+      pass
   soup = BeautifulSoup(response.read()).find('div', {'id': 'fullpage'})
 
   district = re.sub(r'^.*District: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))

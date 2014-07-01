@@ -7,7 +7,7 @@ def getKSRep(url, partyDict):
   check = True
   while check:
     try:
-      response = urllib2.urlopen(url)
+      response = urllib2.urlopen(url, timeout = 10)
       if response.code == 200:
         check = False
     except:

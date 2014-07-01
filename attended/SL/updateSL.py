@@ -1,6 +1,6 @@
 from csv import DictWriter, DictReader
 from bs4 import BeautifulSoup
-import time, importlib, multiprocessing, xlrd
+import time, importlib, multiprocessing, xlrd, lxml
 
 data = []
 
@@ -26,19 +26,18 @@ def parallelPull(scripts, partyDict):
 
 
 def downloadLegislators():
-  scripts = [['MALeg', 'getMAHouse'], ['MALeg', 'getMASenate'], ['TXLeg', 'getTXLeg'], ['PALeg', 'getPALeg'], ['AKLeg', 'getAKLeg'], ['KSLeg', 'getKSLeg'], ['ALLeg', 'getALLeg'], ['ARLeg', 'getARLeg'], ['AZLeg', 'getAZLeg'], ['CALeg', 'getCALeg'], ['COLeg', 'getCOLeg'], ['CTLeg', 'getCTLeg'], ['DELeg', 'getDELeg'], ['FLHouse', 'getFLHouse'], ['FLSenate', 'getFLSen'], ['GAHouse', 'getGAHouse'], ['GASenate', 'getGASenate'], ['HILeg', 'getHILeg'], ['IALeg', 'getIALeg'], ['IDLeg', 'getIDLeg'], ['ILLeg', 'getILLeg'], ['INLeg', 'getINLeg'], ['KYLeg', 'getKYLeg'], ['LALeg', 'getLALeg'], ['MDLeg', 'getMDLeg'], ['MELeg', 'getMELeg'], ['MILeg', 'getMILeg'], ['MNHouse', 'getMNHouse'], ['MNSenate', 'getMNSenate'], ['MOLeg', 'getMOLeg'], ['MSLeg', 'getMSLeg'], ['MTLeg', 'getMTLeg'], ['NCLeg', 'getNCLeg'], ['NDLeg', 'getNDLeg'], ['NELeg', 'getNELeg'], ['NHLeg', 'getNHLeg'], ['NJLeg', 'getNJLeg'], ['NMLeg', 'getNMLeg'], ['NVLeg', 'getNVLeg'], ['NYAssembly', 'getNYAssembly'], ['NYSenate', 'getNYSenate'], ['OHLeg', 'getOHLeg'], ['OKLeg', 'getOKLeg'], ['ORLeg', 'getORLeg'], ['ORLeg', 'getORLeg('], ['RILeg', 'getRILeg'], ['SCLeg', 'getSCLeg'], ['SDLeg', 'getSDLeg'], ['TNLeg', 'getTNLeg'], ['UTLeg', 'getUTLeg'], ['VALeg', 'getVALeg'], ['VTLeg', 'getVTLeg'], ['WALeg', 'getWALeg'], ['WILeg', 'getWILeg'], ['WVLeg', 'getWVLeg'], ['WYLeg', 'getWYLeg']]
+  scripts = [['MALeg', 'getMAHouse'], ['NCLeg', 'getNCLeg'], ['MALeg', 'getMASenate'], ['TXLeg', 'getTXLeg'], ['PALeg', 'getPALeg'], ['AKLeg', 'getAKLeg'], ['KSLeg', 'getKSLeg'], ['ALLeg', 'getALLeg'], ['ARLeg', 'getARLeg'], ['AZLeg', 'getAZLeg'], ['CALeg', 'getCALeg'], ['COLeg', 'getCOLeg'], ['CTLeg', 'getCTLeg'], ['DELeg', 'getDELeg'], ['FLHouse', 'getFLHouse'], ['FLSenate', 'getFLSen'], ['GAHouse', 'getGAHouse'], ['GASenate', 'getGASenate'], ['HILeg', 'getHILeg'], ['IALeg', 'getIALeg'], ['IDLeg', 'getIDLeg'], ['ILLeg', 'getILLeg'], ['INLeg', 'getINLeg'], ['KYLeg', 'getKYLeg'], ['LALeg', 'getLALeg'], ['MDLeg', 'getMDLeg'], ['MELeg', 'getMELeg'], ['MILeg', 'getMILeg'], ['MNHouse', 'getMNHouse'], ['MNSenate', 'getMNSenate'], ['MOLeg', 'getMOLeg'], ['MSLeg', 'getMSLeg'], ['MTLeg', 'getMTLeg'], ['NDLeg', 'getNDLeg'], ['NELeg', 'getNELeg'], ['NHLeg', 'getNHLeg'], ['NJLeg', 'getNJLeg'], ['NMLeg', 'getNMLeg'], ['NVLeg', 'getNVLeg'], ['NYAssembly', 'getNYAssembly'], ['NYSenate', 'getNYSenate'], ['OHLeg', 'getOHLeg'], ['OKLeg', 'getOKLeg'], ['ORLeg', 'getORLeg'], ['ORLeg', 'getORLeg('], ['RILeg', 'getRILeg'], ['SCLeg', 'getSCLeg'], ['SDLeg', 'getSDLeg'], ['TNLeg', 'getTNLeg'], ['UTLeg', 'getUTLeg'], ['VALeg', 'getVALeg'], ['VTLeg', 'getVTLeg'], ['WALeg', 'getWALeg'], ['WILeg', 'getWILeg'], ['WVLeg', 'getWVLeg'], ['WYLeg', 'getWYLeg']]
   partyDict = {'d+r': 'Unknown', 'd': 'Democratic', 'r': 'Republican', '(R)': 'Republican', '(D)': 'Democratic', '(I)':'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent', 'U': 'Independent', '': 'Unknown', 'DFL': 'Democratic-Farmer Labor', 'Dem': 'Democratic', 'Rep': 'Republican'}
 
-  startTime = time.time()
   parallelPull(scripts, partyDict)
   dictList = data
   legObject = {}
   
   for item in dictList:
     if str(item['District']) not in legObject.keys():
-      legObject[str(item['District'])] = {str(item['Name']): item}
-    elif str(item['Name']) not in legObject[str(item['District'])].keys():
-      legObject[str(item['District'])][str(item['Name'])] = item
+      legObject[str(item['District'])] = {str(item['Name'].lower()): item}
+    elif str(item['Name'].lower()) not in legObject[str(item['District'])].keys():
+      legObject[str(item['District'])][str(item['Name'].lower())] = item
     else:
       print 'duplicates in Web', item['District'], item['Name']
 
@@ -65,21 +64,23 @@ def writeCSV(dictList, location, headers):
 
 
 def checkLeg(webLeg, csvLeg):
+  incorrectCSV = []
   for legislator in csvLeg:
-    legName = str(legislator['Official Name'])
+    legName = str(legislator['Official Name'].lower())
     legDist = legislator['Office Name']
 
     if legDist in webLeg.keys():
       if legName in webLeg[legDist].keys():
         del webLeg[legDist][legName]
-        csvLeg.remove(legislator)
 
         if len(webLeg[legDist]) == 0:
           del webLeg[legDist]
+      else:
+        incorrectCSV.append(legislator)
     else:
       print legDist, 'is missing'
 
-  return webLeg, csvLeg
+  return webLeg, incorrectCSV
 
 
 def suggestReplacements(unmatchedWeb, unmatchedCSV):
@@ -87,7 +88,7 @@ def suggestReplacements(unmatchedWeb, unmatchedCSV):
   
   for legislator in unmatchedCSV:
     suggestion = {}
-    legName = legislator['Official Name']
+    legName = legislator['Official Name'].lower()
     legDist = legislator['Office Name']
 
     if legDist in unmatchedWeb.keys():

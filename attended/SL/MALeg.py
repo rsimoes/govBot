@@ -8,9 +8,12 @@ def getDistrict(url, branch):
   check = True
 
   while check:
-    response = urllib2.urlopen(url)
-    if response.code == 200:
-      check = False
+    try:
+      response = urllib2.urlopen(url, timeout = 10)
+      if response.code == 200:
+        check = False
+    except:
+      pass
 
   soup = BeautifulSoup(response.read())
   distList = soup.find('div', {'id': 'District'}).get_text().replace(' - ', ' -- ').replace(".","--").replace('consistng', '--').replace('consiting', '--').replace('consisting','--').replace('Consisting', '--').split('--')[0].strip().replace(',',' ').replace('   ', ' ').replace('  ', ' ').split(' ')

@@ -28,7 +28,7 @@ def getTNLeg(partyDict):
     else:
       repInfo['Name'] = link.get_text().strip()
 
-    repInfo['Name'] = repInfo['Name'].replace('   ', ' ').replace('  ', ' ')
+    repInfo['Name'] = repInfo['Name'].replace('   ', ' ').replace('  ', ' ').replace('Speaker ', '')
 
     repInfo['Website'] = 'http://legis.sd.gov/Legislators/' + link.get('href')
     repInfo['Party'] = partyDict[str(columns[1].get_text().strip())]
