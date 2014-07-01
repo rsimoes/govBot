@@ -1,6 +1,6 @@
 import urllib2, re
 from bs4 import BeautifulSoup
-from csv import DictWritery
+from csv import DictWriter
 
 def pullIndividual(url, name, body, partyDict):
   print url
