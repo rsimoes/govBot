@@ -37,7 +37,7 @@ def getCTLeg(partyDict):
     repInfo = {}
     columns = item.find_all('td')
     
-    rawIdent = columns[0].get_text().split('-')
+    rawIdent = columns[0].get_text().split(' - ')
 
     repInfo['District'] = 'CT State Senate District {0}'.format(int(rawIdent[0].strip()[1:]))
 
