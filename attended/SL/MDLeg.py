@@ -4,7 +4,15 @@ from csv import DictWriter
 
 def getMDRep(url, partyDict):
   print url
-  soup = BeautifulSoup(urllib2.urlopen(url).read())
+  check = True
+  while check:
+    try:
+      response = urllib2.urlopen(url, timeout = 10)
+      if response.code == 200:
+        check = False
+    except:
+      pass
+  soup = BeautifulSoup(response.read())
 
   table = soup.find('table', {'class': 'spco'}).find_all('tr')
   emailLink = table[2].find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]:')})

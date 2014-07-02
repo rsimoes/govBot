@@ -5,7 +5,6 @@ from csv import DictWriter
 def getAKrep(url):
   print url
   check = True
-
   while check:
     try:
       response = urllib2.urlopen(url, timeout = 10)
