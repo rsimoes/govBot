@@ -74,6 +74,6 @@ Attended processes are used to standardize data listed in reasonably consistent 
 The unattended scripts download source from elected official listing pages and add them to a MySQL database, index the current and previous page versions along with known officeholder information to identify when a presumed elected official no longer appears on a given page. Each of these scripts take several hours of uninterrupted internet access to run.
 
 ###Current unattended scripts:
-downloadpages.py,
-findwordsinpages.py,
-wordsfromoffices.py,
+- downloadpages.py
+- findwordsinpages.py
+- wordsfromoffices.py
