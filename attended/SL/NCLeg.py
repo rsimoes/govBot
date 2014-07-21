@@ -33,7 +33,7 @@ def getNCLeg(partyDict):
 
   for item in houseTable:
     repInfo = {}
-    columns = item.find_all('td')\
+    columns = item.find_all('td')
 
     if len(columns) != 0:
       skip = False
