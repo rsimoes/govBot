@@ -1,6 +1,6 @@
 from csv import DictWriter, DictReader
 from bs4 import BeautifulSoup
-import time, importlib, multiprocessing, xlrd, lxml
+import time, importlib, multiprocessing, xlrd, lxml, re
 
 data = []
 
@@ -79,6 +79,7 @@ def checkLeg(webLeg, csvLeg):
         incorrectCSV.append(legislator)
     else:
       print legDist, 'is missing'
+      incorrectCSV.append(legislator)
 
   return webLeg, incorrectCSV
 
@@ -102,12 +103,19 @@ def suggestReplacements(unmatchedWeb, unmatchedCSV):
           suggestion['District'] = legDist
           suggestion['oldName'] = legName
           suggestion['Name'] = str(unmatchedWeb[legDist].keys())
-        suggestions.append(suggestion)
     else:
       suggestion['UID'] = legislator['UID']
       suggestion['District'] = legDist
       suggestion['oldName'] = legName
 
+    testName = ''
+    testOldName = ''
+    if 'Name' in suggestion.keys():
+      testName = suggestion['Name']
+    if 'oldName' in suggestion.keys():
+      testOldName = suggestion['oldName']
+    
+    if not ((testName == '' or re.search('([Vv][Aa][Cc][Aa][Nn][Tt])|([Dd][Ii][Ss][Tt][Rr][Ii][Cc][Tt])', testName)) and (testOldName == '' or re.search('([Vv][Aa][Cc][Aa][Nn][Tt])|([Dd][Ii][Ss][Tt][Rr][Ii][Cc][Tt])', testOldName))):
       suggestions.append(suggestion)
 
   return suggestions
