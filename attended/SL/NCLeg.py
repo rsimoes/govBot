@@ -38,7 +38,7 @@ def getNCLeg(partyDict):
     if len(columns) != 0:
       skip = False
       if columns[2].find('span', {'class': 'notice'}) is not None:
-        if re.search(r'(Resigned)|(Deceased)', columns[2].find('span', {'class': 'notice'}).get_text().strip()):
+        if re.search(r'(RESIGNED)|(DECEASED)', columns[2].find('span', {'class': 'notice'}).get_text().strip()):
           skip = True
       if not skip:
         link = columns[2].find('a')
@@ -59,7 +59,7 @@ def getNCLeg(partyDict):
     if len(columns) != 0:
       skip = False
       if columns[2].find('span', {'class': 'notice'}) is not None:
-        if re.search(r'(Resigned)|(Deceased)', columns[2].find('span', {'class': 'notice'}).get_text().strip()):
+        if re.search(r'(RESIGNED)|(DECEASED)', columns[2].find('span', {'class': 'notice'}).get_text().strip()):
           skip = True
       if not skip:
         link = columns[2].find('a')
