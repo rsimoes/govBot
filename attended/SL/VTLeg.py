@@ -24,7 +24,7 @@ def getVTLeg(partyDict):
       repInfo = {}
       acceptNameRow = True
       acceptEmailRow = False
-    elif len(columns) <= 1:
+    elif columns[0].get('colspan') == 5:
       repInfo = {}
       acceptNameRow = True
     elif item.find('td', {'align': 'RIGHT'}) and acceptNameRow:
@@ -42,8 +42,10 @@ def getVTLeg(partyDict):
     elif item.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]')}) and acceptEmailRow:
       repInfo['Email'] = item.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]')}).get_text().strip()
       acceptEmailRow = False
-
+    elif columns[0].get('colspan') == '4' and len(repInfo.keys()) > 0:
       dictList.append(repInfo)
+      repInfo = {}
+      acceptNameRow = True
 
   for item in senateTable:
     distCell = item.find('td', {'align': re.compile('[Cc][Ee][Nn][Tt][Ee][Rr]')})
@@ -54,7 +56,7 @@ def getVTLeg(partyDict):
       repInfo = {}
       acceptNameRow = True
       acceptEmailRow = False
-    elif len(columns) <= 1:
+    elif columns[0].get('colspan') == 5:
       repInfo = {}
       acceptNameRow = True
     elif item.find('td', {'align': 'RIGHT'}) and acceptNameRow:
@@ -72,9 +74,10 @@ def getVTLeg(partyDict):
     elif item.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]')}) and acceptEmailRow:
       repInfo['Email'] = item.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]')}).get_text().strip()
       acceptEmailRow = False
-
+    elif columns[0].get('colspan') == '4' and len(repInfo.keys()) > 0:
       dictList.append(repInfo)
-
+      repInfo = {}
+      acceptNameRow = True
 
   return dictList
 
