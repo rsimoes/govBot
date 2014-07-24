@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getSDLeg(partyDict):
-  houseSoup = BeautifulSoup(urllib2.urlopen('http://legis.sd.gov/Legislators/Legislators/Roster.aspx?Body=H&CurrentSession=True').read())
-  senateSoup = BeautifulSoup(urllib2.urlopen('http://legis.sd.gov/Legislators/Legislators/Roster.aspx?Body=S&CurrentSession=True').read())
+  houseSoup = BeautifulSoup(urllib2.urlopen('http://legis.sd.gov/Legislators/Legislators/Roster.aspx?Body=H&Session=2014').read())
+  senateSoup = BeautifulSoup(urllib2.urlopen('http://legis.sd.gov/Legislators/Legislators/Roster.aspx?Body=S&Session=2014').read())
   
   houseTable = houseSoup.find('table', {'class': 'roster'}).find_all('tr')
   senateTable = senateSoup.find('table', {'class': 'roster'}).find_all('tr')
