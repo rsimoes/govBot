@@ -23,7 +23,6 @@ def getIDLeg(partyDict):
     repInfo['Website'] = 'http://legislature.idaho.gov/house/membershipSingle.cfm?ID={0}'.format(emailID)
 
     if counter == 0:
-      print emailID
       emailSoup = BeautifulSoup(urllib2.urlopen('http://legislature.idaho.gov/about/contactmembersform.cfm?ID={0}'.format(emailID)).read())
       emailBlock = str(emailSoup.find('script', {'language': 'JavaScript'})).split(';')
 
