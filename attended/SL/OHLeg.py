@@ -15,9 +15,10 @@ def getOHLeg(partyDict):
     repInfo = {}
     nameLink = item.find('a', {'class':'black'})
     
-    repInfo['Name'] = nameLink.string.strip().replace(u'\u00a0', ' ').replace('   ', ' ').replace('  ', ' ')
+    repInfo['Name'] = nameLink.get_text().strip().replace(u'\u00a0', ' ').replace('   ', ' ').replace('  ', ' ')
     repInfo['Website'] = nameLink.get('href').replace('..', 'http://www.ohiohouse.gov')
-    repInfo['Party'] = partyDict[item.find('span', {'class': 'partyLetter'}).string]
+    if item.find('span', {'class': 'partyLetter'}) is not None:
+      repInfo['Party'] = partyDict[item.find('span', {'class': 'partyLetter'}).string]
 
     contactList = str(item).replace('</h3>', '<br/>').split('<br/>')
 
@@ -35,9 +36,10 @@ def getOHLeg(partyDict):
     item = largeItem.find('div', {'class': 'data'})
     nameLink = item.find('a', {'class':'black'})
     
-    repInfo['Name'] = nameLink.string.strip().replace(u'\u00a0', ' ').replace('   ', ' ').replace('  ', ' ')
+    repInfo['Name'] = nameLink.get_text().strip().replace(u'\u00a0', ' ').replace('   ', ' ').replace('  ', ' ')
     repInfo['Website'] = nameLink.get('href').replace('..', 'http://www.ohiosenate.gov')
-    repInfo['Party'] = partyDict[item.find('span', {'class': 'partyLetter'}).string]
+    if item.find('span', {'class': 'partyLetter'}) is not None:
+      repInfo['Party'] = partyDict[item.find('span', {'class': 'partyLetter'}).string]
 
     contactList = str(item).split('<br/>')
 
