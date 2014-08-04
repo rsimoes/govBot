@@ -14,8 +14,8 @@ def getORRep(url):
   return email
 
 def getORLeg(partyDict):
-  houseSoup = BeautifulSoup(urllib2.urlopen('https://www.oregonlegislature.gov/house/Pages/RepresentativesAll.aspx').read().decode('Windows-1252').replace(u'\xe2', "'").replace('\n', ' '))
-  senateSoup = BeautifulSoup(urllib2.urlopen('https://www.oregonlegislature.gov/senate/Pages/SenatorsAll.aspx').read().decode('Windows-1252').replace(u'\xe2', "'").replace('\n', ' '))
+  houseSoup = BeautifulSoup(urllib2.urlopen('https://www.oregonlegislature.gov/house/Pages/RepresentativesAll.aspx').read().decode('utf-8').replace(u'\u200b', ' ').replace(u'\xe2', "'").replace('\n', ' '))
+  senateSoup = BeautifulSoup(urllib2.urlopen('https://www.oregonlegislature.gov/senate/Pages/SenatorsAll.aspx').read().decode('utf-8').replace(u'\u200b', ' ').replace(u'\xe2', "'").replace('\n', ' '))
 
   houseTable = houseSoup.find('table', {'class': 'ms-listviewtable'}).find_all('tr')
   senateTable = senateSoup.find('table', {'class': 'ms-listviewtable'}).find_all('tr')
