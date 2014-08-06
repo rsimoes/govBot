@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getRep(url):
+  print url
   indiesoup = BeautifulSoup(urllib2.urlopen(url))
   table = indiesoup.find_all('tr')
   DOB = ''
@@ -21,7 +22,7 @@ def getRep(url):
   return DOB, Address, Phone   
       
 
-def getNJLeg(partyDict):
+def getNJLeg():
   url = 'http://www.njleg.state.nj.us/members/roster.asp'
   
   dictList = []
