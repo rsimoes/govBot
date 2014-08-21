@@ -1,7 +1,8 @@
 from csv import DictWriter, DictReader
 from bs4 import BeautifulSoup
-import time, importlib, multiprocessing, xlrd, lxml, re
+import time, importlib, multiprocessing, xlrd, lxml, re, os
 
+dropbox = os.environ['DROPBOX']
 data = []
 
 def addToList(object):
@@ -69,8 +70,8 @@ def checkLeg(webLeg, csvLeg):
     legName = str(legislator['Official Name'].lower())
     legDist = legislator['Office Name']
 
-    if legDist in webLeg.keys():
-      if legName in webLeg[legDist].keys():
+    if str(legDist) in webLeg.keys():
+      if str(legName) in webLeg[legDist].keys():
         del webLeg[legDist][legName]
 
         if len(webLeg[legDist]) == 0:
@@ -115,7 +116,7 @@ def suggestReplacements(unmatchedWeb, unmatchedCSV):
     if 'oldName' in suggestion.keys():
       testOldName = suggestion['oldName']
     
-    if not ((testName == '' or re.search('([Vv][Aa][Cc][Aa][Nn][Tt])|([Dd][Ii][Ss][Tt][Rr][Ii][Cc][Tt])', testName)) and (testOldName == '' or re.search('([Vv][Aa][Cc][Aa][Nn][Tt])|([Dd][Ii][Ss][Tt][Rr][Ii][Cc][Tt])', testOldName))):
+    if not ((testName == '' or re.search('([Vv][Aa][Cc][Aa][Nn][Tt])|([Dd][Ii][Ss][Tt][Rr][Ii][Cc][Tt])', testName)) and (testOldName == '' or re.search('([Vv][Aa][Cc][Aa][Nn][Tt])', testOldName))):
       suggestions.append(suggestion)
 
   return suggestions
@@ -124,11 +125,10 @@ def suggestReplacements(unmatchedWeb, unmatchedCSV):
 def main():
   startTime = time.time()
   webLeg = downloadLegislators()
-  csvLeg = openCSV('/home/michael/Dropbox (NOIEF)/noBIP/social_media_collection/office_holders/SL Office Holders.csv')
-  
+  csvLeg = openCSV('{0}/noBIP/social_media_collection/office_holders/SL Office Holders.csv'.format(dropbox))
   unmatchedWeb, unmatchedCSV = checkLeg(webLeg, csvLeg)
   suggestedReplacements = suggestReplacements(unmatchedWeb, unmatchedCSV)
-  writeCSV(suggestedReplacements, '/home/michael/Dropbox (NOIEF)/noBIP/suggestions.csv', headers = ['UID', 'District', 'oldName', 'Name', 'Party', 'Phone', 'Address', 'Website', 'Email', 'Facebook', 'Twitter', 'Youtube', 'DOB'])
+  writeCSV(suggestedReplacements, '{0}/noBIP/suggestions.csv'.format(dropbox), headers = ['UID', 'District', 'oldName', 'Name', 'Party', 'Phone', 'Address', 'Website', 'Email', 'Facebook', 'Twitter', 'Youtube', 'DOB'])
 
   endTime = time.time()
   print 'completed in', endTime-startTime

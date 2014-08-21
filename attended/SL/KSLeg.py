@@ -3,23 +3,22 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getKSRep(url, partyDict):
-  print url
-  check = True
-  while check:
+  while True:
     try:
+      print url
       response = urllib2.urlopen(url, timeout = 10)
-      if response.code == 200:
-        check = False
-    except:
+      soup = BeautifulSoup(response.read(), 'lxml')
+      main = soup.find('div', {'id': 'main'})
+
+      name = re.sub('(Representative)|(Senator)', '', main.find('h1').get_text()).split(' - ')[0].strip().replace('  ', ' ')
+      party = partyDict[str(re.sub(r'^.*Party:\s([A-Za-z]*)\s.*$', r'\1', main.find('h3').get_text()))]
+
+      return name, party
+      break
+    except Exception:
       pass
 
-  soup = BeautifulSoup(response.read(), 'lxml')
-  main = soup.find('div', {'id': 'main'})
 
-  name = re.sub('(Representative)|(Senator)', '', main.find('h1').get_text()).split(' - ')[0].strip().replace('  ', ' ')
-  party = partyDict[str(re.sub(r'^.*Party:\s([A-Za-z]*)\s.*$', r'\1', main.find('h3').get_text()))]
-
-  return name, party
 
 def getKSLeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://www.kslegislature.org/li/b2013_14/chamber/house/roster/', 'lxml').read())

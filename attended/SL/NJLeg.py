@@ -3,24 +3,31 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getRep(url):
-  print url
-  indiesoup = BeautifulSoup(urllib2.urlopen(url))
-  table = indiesoup.find_all('tr')
-  DOB = ''
-  Address = ''
-  Phone = ''
+  while True:
+    try:
+      print url
+      response = urllib2.urlopen(url)
+      table = indiesoup.find_all('tr')
+      DOB = ''
+      Address = ''
+      Phone = ''
 
-  for item in table:
-    text = item.get_text()
-    if text is not None:
-      if re.search('BORN:', text):
-        DOB = text.replace('BORN:', '').strip()
-      if re.search('DISTRICT OFFICE ADDRESS:', text):
-        Address = text.replace('DISTRICT OFFICE ADDRESS:', '').strip().replace('\n',' ').replace('     ', ' ').replace('    ', ' ').replace('   ', ' ').replace('  ', ' ')
-      if re.search('PHONE NUMBER:', text):
-        Phone = text.replace('PHONE NUMBER:', '').strip()
-  return DOB, Address, Phone   
-      
+      for item in table:
+        text = item.get_text()
+        if text is not None:
+          if re.search('BORN:', text):
+            DOB = text.replace('BORN:', '').strip()
+          if re.search('DISTRICT OFFICE ADDRESS:', text):
+            Address = text.replace('DISTRICT OFFICE ADDRESS:', '').strip().replace('\n',' ').replace('     ', ' ').replace('    ', ' ').replace('   ', ' ').replace('  ', ' ')
+          if re.search('PHONE NUMBER:', text):
+            Phone = text.replace('PHONE NUMBER:', '').strip()
+      return DOB, Address, Phone   
+      break
+    except:
+      pass
+  indiesoup = BeautifulSoup(response.read())
+
+
 
 def getNJLeg():
   url = 'http://www.njleg.state.nj.us/members/roster.asp'

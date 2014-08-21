@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getOKLeg(partyDict):
-  houseSheet = xlrd.open_workbook(file_contents = urllib2.urlopen('http://www.okhouse.gov/Documents/MembersList.xls').read(), formatting_info=False).sheet_by_index(0)
-  senateSheet = xlrd.open_workbook(file_contents = urllib2.urlopen('http://www.oksenate.gov/Senators/directory.xls').read(), formatting_info=False).sheet_by_index(0)
-  senateSoup = BeautifulSoup(urllib2.urlopen('http://www.oksenate.gov/Senators/Default.aspx').read())
+  houseSheet = xlrd.open_workbook(file_contents = urllib2.urlopen('http://www.gmodules.com/ig/proxy?url=http://www.okhouse.gov/Documents/MembersList.xls').read(), formatting_info=False).sheet_by_index(0)
+  senateSheet = xlrd.open_workbook(file_contents = urllib2.urlopen('http://www.gmodules.com/ig/proxy?url=http://www.oksenate.gov/Senators/directory.xls').read(), formatting_info=False).sheet_by_index(0)
+  senateSoup = BeautifulSoup(urllib2.urlopen('http://www.gmodules.com/ig/proxy?url=http://www.oksenate.gov/Senators/Default.aspx').read())
  
   dictList = []
  

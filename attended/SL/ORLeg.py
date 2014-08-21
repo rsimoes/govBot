@@ -14,8 +14,8 @@ def getORRep(url):
   return email
 
 def getORLeg(partyDict):
-  houseSoup = BeautifulSoup(urllib2.urlopen('https://www.oregonlegislature.gov/house/Pages/RepresentativesAll.aspx').read().decode('utf-8').replace(u'\u200b', ' ').replace(u'\xe2', "'").replace('\n', ' '))
-  senateSoup = BeautifulSoup(urllib2.urlopen('https://www.oregonlegislature.gov/senate/Pages/SenatorsAll.aspx').read().decode('utf-8').replace(u'\u200b', ' ').replace(u'\xe2', "'").replace('\n', ' '))
+  houseSoup = BeautifulSoup(urllib2.urlopen('https://www.oregonlegislature.gov/house/Pages/RepresentativesAll.aspx').read().decode('utf-8').replace(u'\u200b', ' ').replace(u'\xe2', "'").replace('\n', ' '), 'html5lib')
+  senateSoup = BeautifulSoup(urllib2.urlopen('https://www.oregonlegislature.gov/senate/Pages/SenatorsAll.aspx').read().decode('utf-8').replace(u'\u200b', ' ').replace(u'\xe2', "'").replace('\n', ' '), 'html5lib')
 
   houseTable = houseSoup.find('table', {'class': 'ms-listviewtable'}).find_all('tr')
   senateTable = senateSoup.find('table', {'class': 'ms-listviewtable'}).find_all('tr')
@@ -40,7 +40,7 @@ def getORLeg(partyDict):
         repInfo['Name'] = links[0].get_text().replace('Representative', '').replace(u'\u20ac', '').replace(u'\u2039', '').replace("'", '').replace(u'\u00a0', ' ').strip()
         repInfo['Website'] = links[0].get('href')
       else:
-        repInfo['Party'] = partyDict[str(re.sub(r'^.*Party: ([RD][a-z]*).*?$', r'\1', partyDist))]
+        repInfo['Party'] = partyDict[str(re.sub(r'^.*Party: ([RD][a-z]*).*?$', r'\1', partyDist.replace('\n', ' ')))]
         repInfo['Name'] = links[0].get_text().replace('Representative', '').replace(u'\u20ac', '').replace(u'\u2039', '').replace("'", '').replace(u'\u00a0', ' ').strip()
         repInfo['Website'] = 'https://www.oregonlegislature.gov' + links[0].get('href')
     else:

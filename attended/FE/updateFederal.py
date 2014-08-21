@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
-import urllib2, csv, re
+import urllib2, csv, re, os
 
 ###Update these variables as needed
-csvLocation = '/home/michael/Dropbox (NOIEF)/noBIP/social_media_collection/office_holders/FE Office Holders.csv'
+dropbox = os.environ['DROPBOX']
+csvLocation = '{0}/noBIP/social_media_collection/office_holders/FE Office Holders.csv'.format(dropbox)
 senateURL = 'http://www.senate.gov/general/contact_information/senators_cfm.xml'
 houseURL = 'http://clerk.house.gov/member_info/text-labels-113.txt'
 partyDict = {'R': 'Republican', 'D': 'Democratic', 'I': 'Independent','': 'Unknown'}

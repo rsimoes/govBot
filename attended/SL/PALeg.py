@@ -3,43 +3,35 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def repDownload(url):
-  print url
-  check = True
-  while check:
+  while True:
     try:
+      print url
       response = urllib2.urlopen(url, timeout = 10)
-      if response.code == 200:
-        check = False
-    except:
+      soup = BeautifulSoup(response.read())
+      social = soup.find('div', {'class': 'Widget MemberBio-SocialLinks'})
+      
+      facebook = ''
+      twitter = ''
+      email = ''
+      phone = ''
+      address = ''
+      rawfacebook = social.find('a', {'href': re.compile('facebook')})
+      rawtwitter = social.find('a', {'href': re.compile('twitter')})
+      rawaddress = str(soup.find('address')).split('<br/>')
+      
+      if rawfacebook is not None:
+        facebook = rawfacebook.get('href')
+      if rawtwitter is not None:
+        twitter = re.sub(r'^.*/(.*)$', r'\1', rawtwitter.get('href'))
+      
+      address = rawaddress[1].strip() + ' ' + rawaddress[2].strip()
+
+      return facebook, twitter, email, phone, address
+      break
+    except Exception:
       pass
 
-  soup = BeautifulSoup(response.read())
-  social = soup.find('div', {'class': 'Widget MemberBio-SocialLinks'})
-  
-  facebook = ''
-  twitter = ''
-  email = ''
-  phone = ''
-  address = ''
 
-  rawfacebook = social.find('a', {'href': re.compile('facebook')})
-  rawtwitter = social.find('a', {'href': re.compile('twitter')})
-
-  ##finish these later
-#  rawemail = 
-#  rawphone = 
-#  rawaddress =
-
-  rawaddress = str(soup.find('address')).split('<br/>')
-  
-  if rawfacebook is not None:
-    facebook = rawfacebook.get('href')
-  if rawtwitter is not None:
-    twitter = re.sub(r'^.*/(.*)$', r'\1', rawtwitter.get('href'))
-  
-  address = rawaddress[1].strip() + ' ' + rawaddress[2].strip()
-
-  return facebook, twitter, email, phone, address
 
 def getPALeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://www.legis.state.pa.us/cfdocs/legis/home/member_information/mbrList.cfm?body=H&sort=district').read())

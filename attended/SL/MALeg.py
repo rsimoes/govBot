@@ -3,43 +3,41 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getDistrict(url, branch):
-  print url
+
   ordinalDict = {'first': '1', 'second': '2', 'third': '3', 'fourth': '4', 'fifth': '5', 'sixth': '6', 'seventh': '7', 'eighth': '8', 'ninth': '9', 'tenth': '10', 'eleventh': '11', 'twelfth': '12', 'thirteenth': '13', 'fourteenth': '14', 'fifteenth': '15', 'sixteenth': '16', 'seventeenth': '17', 'eighteenth': '18', 'nineteenth': '19', 'twentieth': '20', 'thirtieth': '30', 'fortieth': '40', 'fiftieth': '50', 'sixtieth': '60', 'seventieth': '70', 'eightieth': '80', 'ninetieth': '9', 'twenty': '2', 'thirty': '3', 'forty': '4', 'fifty': '5', 'sixty': '6', 'seventy': '7', 'eighty': '8', 'ninety': '9'}
-  check = True
+  while True:
 
-  while check:
     try:
+      print url
       response = urllib2.urlopen(url, timeout = 10)
-      if response.code == 200:
-        check = False
-    except:
+      soup = BeautifulSoup(response.read(), 'html5lib')
+      distList = soup.find('div', {'id': 'District'}).get_text().replace(' - ', ' -- ').replace(".","--").replace('consistng', '--').replace('consiting', '--').replace('consisting','--').replace('Consisting', '--').split('--')[0].strip().replace(',',' ').replace('   ', ' ').replace('  ', ' ').split(' ')
+      ordinalList = distList[0].split('-')
+        
+      lastString = ordinalList[len(ordinalList)-1]
+      distNum = ''
+      if ordinalList[0].lower() in ordinalDict.keys():
+        for i in range(len(ordinalList)):
+          distNum = distNum + ordinalDict[ordinalList[i].lower()]
+        distNum = distNum + lastString[len(lastString)-2:]
+          
+        townName = ''
+        for i in range(1,len(distList)):
+          townName = townName + ' ' + distList[i]
+        townName = townName.strip()
+        district = 'MA State {0} District {1} {2}'.format(branch, distNum, townName)
+      else:
+        townName = ''
+        for i in range(len(distList)):
+          townName = townName + ' ' + distList[i]
+        townName = townName.strip()
+         
+        district = 'MA State {0} District {1}'.format(branch, townName)
+
+      return district
+      break
+    except Exception:
       pass
-
-  soup = BeautifulSoup(response.read())
-  distList = soup.find('div', {'id': 'District'}).get_text().replace(' - ', ' -- ').replace(".","--").replace('consistng', '--').replace('consiting', '--').replace('consisting','--').replace('Consisting', '--').split('--')[0].strip().replace(',',' ').replace('   ', ' ').replace('  ', ' ').split(' ')
-  ordinalList = distList[0].split('-')
-    
-  lastString = ordinalList[len(ordinalList)-1]
-  distNum = ''
-  if ordinalList[0].lower() in ordinalDict.keys():
-    for i in range(len(ordinalList)):
-      distNum = distNum + ordinalDict[ordinalList[i].lower()]
-    distNum = distNum + lastString[len(lastString)-2:]
-      
-    townName = ''
-    for i in range(1,len(distList)):
-      townName = townName + ' ' + distList[i]
-    townName = townName.strip()
-    district = 'MA State {0} District {1} {2}'.format(branch, distNum, townName)
-  else:
-    townName = ''
-    for i in range(len(distList)):
-      townName = townName + ' ' + distList[i]
-    townName = townName.strip()
-     
-    district = 'MA State {0} District {1}'.format(branch, townName)
-
-  return district 
 
 
 def getMAHouse(partyDict):

@@ -1,15 +1,24 @@
-import urllib2, re
+import urllib2, re, lxml
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getHILeg(partyDict):
-  soup = BeautifulSoup(urllib2.urlopen('http://www.capitol.hawaii.gov/members/legislators.aspx?chamber=all').read())
+  while True:
+    try:
+      response = urllib2.urlopen('http://www.capitol.hawaii.gov/members/legislators.aspx?chamber=all')
+      if response.code == 200:
+        break
+    except:
+      pass
+  html = response.read()
+  soup = BeautifulSoup(html, 'html5lib')
+
   bodyDict = {'H': 'House', 'S': 'Senate'}
   dictList = []
 
   for i in range(2, 78):
     repInfo = {}
-
+    
     mainLink = soup.find('a', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_HyperLinkLast'.format(i)})
     rawFirst = soup.find('span', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_LabelFirst'.format(i)})
     rawSur = soup.find('span', {'id': 'ctl00_ContentPlaceHolderCol1_GridView1_ctl{:02}_LabelSur'.format(i)})
