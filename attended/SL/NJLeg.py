@@ -7,6 +7,7 @@ def getRep(url):
     try:
       print url
       response = urllib2.urlopen(url)
+      indiesoup = BeautifulSoup(response.read())
       table = indiesoup.find_all('tr')
       DOB = ''
       Address = ''
@@ -23,13 +24,13 @@ def getRep(url):
             Phone = text.replace('PHONE NUMBER:', '').strip()
       return DOB, Address, Phone   
       break
-    except:
+    except Exception:
       pass
-  indiesoup = BeautifulSoup(response.read())
+  
 
 
 
-def getNJLeg():
+def getNJLeg(unnecessaryArg):
   url = 'http://www.njleg.state.nj.us/members/roster.asp'
   
   dictList = []
@@ -53,7 +54,7 @@ def getNJLeg():
   return dictList
   
 if __name__ == "__main__":
-  dictList = getNJLeg()
+  dictList = getNJLeg('')
   
   with open('/home/michael/Desktop/NJLeg.csv', 'w') as csvFile:
     dwObject = DictWriter(csvFile, ['District', 'Name', 'Website', 'DOB', 'Phone', 'Address'], restval = '')
