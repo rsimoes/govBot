@@ -3,24 +3,19 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getMORep(url):
-  print url
-  check = True
-  while check:
+  while True:
+    print url
     try:
       response = urllib2.urlopen(url, timeout = 10)
-      if response.code == 200:
-        check = False
-    except:
+      soup = BeautifulSoup(response.read())
+      emailLink = soup.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]:')})
+      email = ''
+      if emailLink is not None:
+        email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', emailLink.get_text().strip())
+      return email
+    except Exception:
       pass
-
-  soup = BeautifulSoup(response.read())
-  emailLink = soup.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]:')})
-  email = ''
-
-  if emailLink is not None:
-    email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', emailLink.get_text().strip())
-
-  return email
+  
 
 def getMOLeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://www.house.mo.gov/member.aspx').read(), 'lxml')
