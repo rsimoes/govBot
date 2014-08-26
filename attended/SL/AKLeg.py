@@ -3,28 +3,21 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getAKrep(url):
-  print url
-  check = True
-  while check:
+  while True:
+    print url
     try:
       response = urllib2.urlopen(url, timeout = 10)
-      if response.code == 200:
-        check = False
-    except:
+      soup = BeautifulSoup(response.read()).find('div', {'id': 'fullpage'})
+      district = re.sub(r'^.*District: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))
+      party = re.sub(r'^.*Party: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))
+      email = ''
+      tempEmail = soup.find('a', {'href': re.compile('mailto')})
+      if tempEmail is not None:
+        email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', tempEmail.get('href'))
+      return district, party, email
+    except Exception:
       pass
-  soup = BeautifulSoup(response.read()).find('div', {'id': 'fullpage'})
-
-  district = re.sub(r'^.*District: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))
-  party = re.sub(r'^.*Party: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))
-
-  email = ''
-  tempEmail = soup.find('a', {'href': re.compile('mailto')})
-
-  if tempEmail is not None:
-    email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', tempEmail.get('href'))
-
-  return district, party, email
-
+      
 
 def getAKLeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://house.legis.state.ak.us/').read())

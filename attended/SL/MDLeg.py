@@ -3,27 +3,23 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getMDRep(url, partyDict):
-  print url
-  check = True
-  while check:
+  while True:
+    print url
     try:
       response = urllib2.urlopen(url, timeout = 10)
+      soup = BeautifulSoup(response.read())
+      table = soup.find('table', {'class': 'spco'}).find_all('tr')
+      emailLink = table[2].find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]:')})
+      email = ''
+      party = table[5].find('td').get_text().strip()
+      if emailLink is not None:
+        email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', emailLink.get_text().strip())
+      return party, email
       if response.code == 200:
         check = False
-    except:
+    except Exception:
       pass
-  soup = BeautifulSoup(response.read())
-
-  table = soup.find('table', {'class': 'spco'}).find_all('tr')
-  emailLink = table[2].find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]:')})
-
-  email = ''
-  party = table[5].find('td').get_text().strip()
-
-  if emailLink is not None:
-    email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', emailLink.get_text().strip())
-
-  return party, email
+  
 
 def getMDLeg(partyDict):
   soup = BeautifulSoup(urllib2.urlopen('http://www.mgaleg.maryland.gov/webmga/frmmain.aspx?pid=legisrpage&tab=subject6').read(), 'lxml')

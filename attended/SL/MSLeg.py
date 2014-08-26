@@ -3,46 +3,38 @@ from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def pullIndividual(url, name, body, partyDict):
-  print url
-  check = True
-
-  while check:
+  while True:
+    print url
     try:
       response = urllib2.urlopen(url)
-      if response.code == 200:
-        check = False
-    except:
+      indivSoup = BeautifulSoup(response.read())
+      indivInfo = {}
+      rawDistrict = indivSoup.find('district')
+      rawParty = indivSoup.find('party')
+      rawEmail = indivSoup.find('email_address')
+      rawPhone = indivSoup.find('cap_phone')
+      rawAddress = indivSoup.find('cap_room')
+      
+      if rawDistrict is not None:
+        if rawDistrict.string is not None:
+          indivInfo['District'] = 'MS State ' + body[0].upper() + body[1:] + ' District ' + rawDistrict.string.strip()
+      if rawParty is not None:
+        if rawParty.string is not None:
+          indivInfo['Party'] = partyDict[rawParty.string.strip()]
+      if rawEmail is not None:
+        if rawEmail.string is not None:
+          indivInfo['Email'] = rawEmail.string.strip() + body + '.ms.gov'
+      if rawPhone is not None:
+        if rawPhone.string is not None:
+          indivInfo['Phone'] = rawPhone.string.strip()
+      if rawAddress is not None:
+        if rawAddress.string is not None:
+          indivInfo['Address'] = 'Room ' + rawAddress.string.strip() + ' P.O. Box 1018 Jackson, MS 39215'
+      indivInfo['Name'] = name.strip()
+      indivInfo['Website'] = url.strip()
+      return indivInfo
+    except Exception:
       pass
-
-  indivSoup = BeautifulSoup(response.read())
-  indivInfo = {}
-  
-  rawDistrict = indivSoup.find('district')
-  rawParty = indivSoup.find('party')
-  rawEmail = indivSoup.find('email_address')
-  rawPhone = indivSoup.find('cap_phone')
-  rawAddress = indivSoup.find('cap_room')
-  
-  if rawDistrict is not None:
-    if rawDistrict.string is not None:
-      indivInfo['District'] = 'MS State ' + body[0].upper() + body[1:] + ' District ' + rawDistrict.string.strip()
-  if rawParty is not None:
-    if rawParty.string is not None:
-      indivInfo['Party'] = partyDict[rawParty.string.strip()]
-  if rawEmail is not None:
-    if rawEmail.string is not None:
-      indivInfo['Email'] = rawEmail.string.strip() + body + '.ms.gov'
-  if rawPhone is not None:
-    if rawPhone.string is not None:
-      indivInfo['Phone'] = rawPhone.string.strip()
-  if rawAddress is not None:
-    if rawAddress.string is not None:
-      indivInfo['Address'] = 'Room ' + rawAddress.string.strip() + ' P.O. Box 1018 Jackson, MS 39215'
-
-  indivInfo['Name'] = name.strip()
-  indivInfo['Website'] = url.strip()
-
-  return indivInfo
 
 
 def getMSLeg(partyDict):
