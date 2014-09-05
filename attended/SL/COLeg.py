@@ -4,33 +4,34 @@ from csv import DictWriter
 
 def getCORep(url):
   while True:
-    print url
-    soup = BeautifulSoup(urllib2.urlopen(url).read())
-    data = soup.find('table').find_all('tr')[1].find_all('td')
+    try:
+      print url
+      soup = BeautifulSoup(urllib2.urlopen(url).read())
+      data = soup.find('table').find_all('tr')[1].find_all('td')
 
-    phone = ''
-    email = ''
+      phone = ''
+      email = ''
 
-    rawName = data[0].get_text().split('\n')[0].split(',')
-    if len(rawName) == 2:
-      name = rawName[1].strip() + ' ' + rawName[0].strip()
-    elif len(rawName) == 3:
-      name = rawName[2].strip() + ' ' + rawName[0].strip() + ' ' + rawName[1].strip()
-    else:
-      name = data[0].get_text().strip()
-    name = name.replace('   ', ' ').replace('  ', ' ')
-    rawContact = data[6].get_text().strip().split('\n')
-    if len(rawContact) == 2:
-      phone = rawContact[0][4:].strip()
-      email = rawContact[1][7:].strip()
-    elif len(rawContact) == 1:
-      if re.search('Cap:', rawContact[0]):
+      rawName = data[0].get_text().split('\n')[0].split(',')
+      if len(rawName) == 2:
+        name = rawName[1].strip() + ' ' + rawName[0].strip()
+      elif len(rawName) == 3:
+        name = rawName[2].strip() + ' ' + rawName[0].strip() + ' ' + rawName[1].strip()
+      else:
+        name = data[0].get_text().strip()
+      name = name.replace('   ', ' ').replace('  ', ' ')
+      rawContact = data[6].get_text().strip().split('\n')
+      if len(rawContact) == 2:
         phone = rawContact[0][4:].strip()
-      elif re.search('E-mail:', rawContact[0]):
-        email = rawContact[0][7:].strip()
-    return name, phone, email
-  except Exception:
-    pass
+        email = rawContact[1][7:].strip()
+      elif len(rawContact) == 1:
+        if re.search('Cap:', rawContact[0]):
+          phone = rawContact[0][4:].strip()
+        elif re.search('E-mail:', rawContact[0]):
+          email = rawContact[0][7:].strip()
+      return name, phone, email
+    except Exception:
+      pass
 
 def getCOLeg(partyDict):
   for i in [1, 21, 41, 61, 81]:
