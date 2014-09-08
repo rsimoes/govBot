@@ -30,7 +30,7 @@ def getTNLeg(partyDict):
 
     repInfo['Name'] = repInfo['Name'].replace('   ', ' ').replace('  ', ' ').replace('Speaker ', '')
 
-    repInfo['Website'] = 'http://legis.sd.gov/Legislators/' + link.get('href')
+    repInfo['Website'] = 'http://www.capitol.tn.gov/house/members/' + link.get('href')
     repInfo['Party'] = partyDict[str(columns[1].get_text().strip())]
     repInfo['District'] = 'TN State House {0}'.format(columns[3].get_text().strip())
     repInfo['Address'] = '301 6th Avenue North Suite {0}, {1} Nashville, TN 37243'.format(addressList[0], addressList[1])
@@ -60,7 +60,7 @@ def getTNLeg(partyDict):
     if re.search('^http:', link.get('href')):
       repInfo['Website'] = link.get('href')
     else:
-      repInfo['Website'] = 'http://legis.sd.gov/Legislators/' + link.get('href')
+      repInfo['Website'] = 'http://www.capitol.tn.gov/senate/members/' + link.get('href')
       
     repInfo['Party'] = partyDict[str(columns[1].get_text().strip())]
     repInfo['District'] = 'TN State Senate {0}'.format(columns[3].get_text().strip())
