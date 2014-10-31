@@ -1,4 +1,4 @@
-import sys, os, re, subprocess, urllib, urllib2, MySQLdb, pdfminer, chardet, threading
+import sys, os, re, subprocess, urllib, urllib2, MySQLdb, pdfminer, chardet
 
 def checkURL(url):
   try:
@@ -39,16 +39,6 @@ def readhtml(url):
   return html
 
 
-class pageThread(threading.Thread):
-  def __init__(self, threadID, name, counter, url):
-    self.threadID = threadID
-    self.name = name
-    self.counter = counter
-    self.url = url
-  def run(self):
-    print self.url
-
-
 def downloadpages(limit = ''):
   limit = str(limit)
   query = 'SELECT id, url FROM url {0}'.format(limit).strip() + ';'
@@ -76,7 +66,7 @@ def downloadpages(limit = ''):
   return len(list(urls))
 
 def main():
-  downloadpages('url is not null')
+  downloadpages('where url is not null')
 
 if __name__ == '__main__':
   main()
