@@ -8,7 +8,9 @@ def getHILeg(partyDict):
       response = urllib2.urlopen('http://www.capitol.hawaii.gov/members/legislators.aspx?chamber=all')
       if response.code == 200:
         break
-    except:
+    except Exception as error:
+      print type(error)
+      print error
       pass
   html = response.read()
   soup = BeautifulSoup(html, 'html5lib')

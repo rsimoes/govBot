@@ -9,12 +9,9 @@ def getKSRep(url, partyDict):
       response = urllib2.urlopen(url, timeout = 10)
       soup = BeautifulSoup(response.read(), 'lxml')
       main = soup.find('div', {'id': 'main'})
-
       name = re.sub('(Representative)|(Senator)', '', main.find('h1').get_text()).split(' - ')[0].strip().replace('  ', ' ')
       party = partyDict[str(re.sub(r'^.*Party:\s([A-Za-z]*)\s.*$', r'\1', main.find('h3').get_text()))]
-
       return name, party
-      break
     except Exception:
       pass
 
