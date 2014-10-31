@@ -63,3 +63,6 @@ Attended processes are used to standardize data listed in reasonably consistent 
 - [SL/WILeg.py](https://github.com/mlambright/govBot/tree/master/attended/SL/WILeg.py)
 - [SL/WVLeg.py](https://github.com/mlambright/govBot/tree/master/attended/SL/WVLeg.py)
 - [SL/WYLeg.py](https://github.com/mlambright/govBot/tree/master/attended/SL/WYLeg.py)
+
+
+###Required packages
