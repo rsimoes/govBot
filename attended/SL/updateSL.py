@@ -36,9 +36,9 @@ def downloadLegislators():
   
   for item in dictList:
     if str(item['District']) not in legObject.keys():
-      legObject[str(item['District'])] = {str(item['Name'].lower()): item}
+      legObject[str(item['District'])] = {str(item['Name'].lower().replace('.', '')): item}
     elif str(item['Name'].lower()) not in legObject[str(item['District'])].keys():
-      legObject[str(item['District'])][str(item['Name'].lower())] = item
+      legObject[str(item['District'])][str(item['Name'].lower().replace('.', ''))] = item
     else:
       print 'duplicates in Web', item['District'], item['Name']
 
@@ -67,7 +67,7 @@ def writeCSV(dictList, location, headers):
 def checkLeg(webLeg, csvLeg):
   incorrectCSV = []
   for legislator in csvLeg:
-    legName = str(legislator['Official Name'].lower())
+    legName = str(legislator['Official Name'].lower().replace('.', ''))
     legDist = legislator['Office Name']
 
     if str(legDist) in webLeg.keys():
