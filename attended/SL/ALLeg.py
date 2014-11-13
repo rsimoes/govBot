@@ -21,7 +21,9 @@ def getALLeg(partyDict):
   houseSoup = BeautifulSoup(urllib2.urlopen('http://www.legislature.state.al.us/house/representatives/houseroster_alpha.html').read())
   senateSoup = BeautifulSoup(urllib2.urlopen('http://www.legislature.state.al.us/senate/senators/senateroster_alpha.html').read())
 
-  houseTable = houseSoup.find('table', {'height': '3360'}).find_all('tr')
+
+  #These break and will periodically need to be adjusted. Alabama doesn't like classes or ID's, so hard-coded heights are the most useful/
+  houseTable = houseSoup.find('table', {'height': '3374'}).find_all('tr')
   senateTable = senateSoup.find('table', {'height': '888'}).find_all('tr')
 
   dictList = []
@@ -42,8 +44,10 @@ def getALLeg(partyDict):
       repInfo['Name'] = rawName[1].strip().title() + ' ' + rawName[0].strip().title()
     elif len(rawName) == 3:
       repInfo['Name'] = rawName[1].strip().title() + ' ' + rawName[0].strip().title() + ' ' + rawName[2].strip().title()
-    else:
+    elif link.string is not None:
       repInfo['Name'] = link.string.strip().title()
+    else:
+      repInfo['Name'] = 'VACANT'
 
     repInfo['Name'] = repInfo['Name'].replace('Jr.', '').strip().replace('  ', ' ')
     repInfo['Party'] = partyDict[str(columns[1].get_text().strip())]
@@ -69,8 +73,10 @@ def getALLeg(partyDict):
       repInfo['Name'] = rawName[1].strip().title() + ' ' + rawName[0].strip().title()
     elif len(rawName) == 3:
       repInfo['Name'] = rawName[1].strip().title() + ' ' + rawName[0].strip().title() + ' ' + rawName[2].strip().title()
-    else:
+    elif link.string is not None:
       repInfo['Name'] = link.string.strip().title()
+    else:
+      repInfo['Name'] = ''
 
     repInfo['Name'] = repInfo['Name'].replace('Jr.', '').strip().replace('  ', ' ')
     repInfo['Party'] = partyDict[str(columns[1].get_text().strip())]

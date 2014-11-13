@@ -1,10 +1,8 @@
-import urllib2, urllib, re
+import urllib2, re
 from bs4 import BeautifulSoup
 from csv import DictWriter
 
 def getTNLeg(partyDict):
-  buildingDict = {'LP': 'Legislative Plaza', 'WMB': 'War Memorial Building'}
-
   houseSoup = BeautifulSoup(urllib2.urlopen('http://www.capitol.tn.gov/house/members/').read())
   senateSoup = BeautifulSoup(urllib2.urlopen('http://www.capitol.tn.gov/senate/members/').read())
   
@@ -20,6 +18,8 @@ def getTNLeg(partyDict):
     link = columns[0].find('a')
     nameList = columns[0].get_text().split(',')
     addressList = columns[4].get_text().replace('WMB', ' WMB').replace('LP', ' LP').replace('  ', ' ').strip().split(' ')
+    if len(addressList) < 2:
+      addressList = ['', '']
 
     if len(nameList) == 2:
       repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip()
@@ -40,13 +40,14 @@ def getTNLeg(partyDict):
     dictList.append(repInfo)
 
   for item in senateTable:
+    if len(addressList) < 2:
+      addressList = ['', '']
     repInfo = {}
     columns = item.find_all('td')
 
     link = columns[0].find('a')
     nameList = columns[0].get_text().split(',')
     addressList = columns[4].get_text().replace('WMB', ' WMB').replace('LP', ' LP').replace('  ', ' ').strip().split(' ')
-
 
     if len(nameList) == 2:
       repInfo['Name'] = nameList[1].strip() + ' ' + nameList[0].strip()
@@ -82,4 +83,3 @@ if __name__ == "__main__":
 
     for row in dictList:
       dwObject.writerow(row)
-                                 

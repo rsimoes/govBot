@@ -17,11 +17,13 @@ def getARLeg(partyDict):
 
     repInfo['Name'] = link.string.strip().replace('  ', ' ')
     repInfo['Website'] = link.get('href')
-    repInfo['Email'] = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', columns[1].find('a').get('href'))
+    if columns[1].find('a') is not None:
+      repInfo['Email'] = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', columns[1].find('a').get('href'))
 
     repInfo['District'] = 'AR State {0} District {1}'.format(columns[2].string.strip(), columns[4].string.strip())
 
-    dictList.append(repInfo)
+    if not re.search('Elect', columns[0].get_text()):
+      dictList.append(repInfo)
 
   return dictList
 
