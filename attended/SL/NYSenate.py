@@ -6,10 +6,11 @@ import re
 
 
 def getContact(url):
-    print url
+    connected = False
     while True:
+        print url
         try:
-            contactSoup = BeautifulSoup(urllib2.urlopen(url).read())
+            contactSoup = BeautifulSoup(urllib2.urlopen(url, timeout=5).read())
             address = ''
             phone = ''
             email = ''
@@ -32,7 +33,8 @@ def getContact(url):
                             domain = re.sub(' \[dot\] ', '.', rawemail.find('span', {'class': 'd'}).string.strip())
                             email = username + '@' + domain
                         return phone, address, email
-        except Exception:
+            break
+        except Exception as error:
             pass
 
 
