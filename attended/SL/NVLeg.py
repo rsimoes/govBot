@@ -39,7 +39,8 @@ def getNVLeg(partyDict):
                 repInfo['Party'] = item['Party'].strip()
                 repInfo['Email'] = item['LCBEmail'].strip()
                 repInfo['Address'] = address
-                repInfo['Phone'] = item['LCBPhone'].strip()
+                if item['LCBPhone'] is not None:
+                    repInfo['Phone'] = item['LCBPhone'].strip()
             dictList.append(repInfo)
 
     for item in senateObject:
@@ -67,7 +68,8 @@ def getNVLeg(partyDict):
                 repInfo['Party'] = item['Party'].strip()
                 repInfo['Email'] = item['LCBEmail'].strip()
                 repInfo['Address'] = address
-                repInfo['Phone'] = item['LCBPhone'].strip()
+                if item['LCBPhone'] is not None:
+                    repInfo['Phone'] = item['LCBPhone'].strip()
             dictList.append(repInfo)
 
     return dictList
