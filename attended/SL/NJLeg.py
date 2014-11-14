@@ -26,7 +26,6 @@ def getRep(url):
                     if re.search('PHONE NUMBER:', text):
                         Phone = text.replace('PHONE NUMBER:', '').strip()
             return DOB, Address, Phone
-            break
         except Exception:
             pass
 
