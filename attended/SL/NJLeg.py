@@ -47,7 +47,7 @@ def getNJLeg(unnecessaryArg):
             repInfo['Website'] = 'http://www.njleg.state.nj.us/members/' + link.get('href')
             contactInfo = getRep(repInfo['Website'])
             if contactInfo is not None:
-                repInfo['DOB'], repInfo['Address'], repInfo['Phone'] = getRep(repInfo['Website'])
+                repInfo['DOB'], repInfo['Address'], repInfo['Phone'] = contactInfo
             dictList.append(repInfo)
     return dictList
 
