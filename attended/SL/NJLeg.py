@@ -10,7 +10,7 @@ def getRep(url):
     while True:
         try:
             print url
-            response = urllib2.urlopen(url)
+            response = urllib2.urlopen(url, timeout=5)
             indiesoup = BeautifulSoup(response.read())
             table = indiesoup.find_all('tr')
             DOB = ''
@@ -45,7 +45,9 @@ def getNJLeg(unnecessaryArg):
             repInfo['District'] = 'NJ State ' + chambers[j] + ' District ' + str(i)
             repInfo['Name'] = link.string.strip().replace(u"\u00A0", ' ').title().replace('  ', ' ')
             repInfo['Website'] = 'http://www.njleg.state.nj.us/members/' + link.get('href')
-            repInfo['DOB'], repInfo['Address'], repInfo['Phone'] = getRep(repInfo['Website'])
+            contactInfo = getRep(repInfo['Website'])
+            if contactInfo is not None:
+                repInfo['DOB'], repInfo['Address'], repInfo['Phone'] = getRep(repInfo['Website'])
             dictList.append(repInfo)
     return dictList
 
