@@ -11,7 +11,7 @@ def getDistrict(url, branch):
             print url
             response = urllib2.urlopen(url, timeout=10)
             soup = BeautifulSoup(response.read(), 'html5lib')
-            distList = soup.find('div', {'id': 'District'}).get_text().replace(' - ', ' -- ').replace(".", "--").replace('consistng', '--').replace('consiting', '--').replace('consisting', '--').replace('Consisting', '--').split('--')[0].strip().replace(', ', ' ').replace('     ', ' ').replace('    ', ' ').split(' ')
+            distList = soup.find('div', {'id': 'District'}).get_text().replace(' - ', ' -- ').replace(".", "--").replace('consistng', '--').replace('consiting', '--').replace('consisting', '--').replace('Consisting', '--').split('--')[0].replace(',', ' ').strip().replace('     ', ' ').replace('    ', ' ').split(' ')
             ordinalList = distList[0].split('-')
             lastString = ordinalList[len(ordinalList) - 1]
             distNum = ''
