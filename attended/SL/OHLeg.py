@@ -15,7 +15,7 @@ def getOHLeg(partyDict):
     for item in houseTable:
         repInfo = {}
         nameLink = item.find('a', {'class': 'black'})
-        repInfo['Name'] = nameLink.get_text().strip().replace(u'\u00a0', ' ').replace('     ', ' ').replace('    ', ' ')
+        repInfo['Name'] = nameLink.get_text().strip().replace(u'\u00a0', ' ').replace('   ', ' ').replace('  ', ' ')
         repInfo['Website'] = nameLink.get('href').replace('..', 'http://www.ohiohouse.gov')
         if item.find('span', {'class': 'partyLetter'}) is not None:
             repInfo['Party'] = partyDict[item.find('span', {'class': 'partyLetter'}).string]
@@ -31,7 +31,7 @@ def getOHLeg(partyDict):
         repInfo = {}
         item = largeItem.find('div', {'class': 'data'})
         nameLink = item.find('a', {'class': 'black'})
-        repInfo['Name'] = nameLink.get_text().strip().replace(u'\u00a0', ' ').replace('     ', ' ').replace('    ', ' ')
+        repInfo['Name'] = nameLink.get_text().strip().replace(u'\u00a0', ' ').replace('   ', ' ').replace('  ', ' ')
         repInfo['Website'] = nameLink.get('href').replace('..', 'http://www.ohiosenate.gov')
         if item.find('span', {'class': 'partyLetter'}) is not None:
             repInfo['Party'] = partyDict[item.find('span', {'class': 'partyLetter'}).string]

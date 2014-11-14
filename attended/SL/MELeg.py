@@ -41,7 +41,7 @@ def getMELeg(partyDict):
         repInfo = {}
         rowValues = senateSheet.row_values(i, start_colx=0, end_colx=None)
         repInfo['District'] = 'ME State Senate District {0}'.format(int(rowValues[1]))
-        repInfo['Name'] = '{0} {1} {2}'.format(rowValues[2].strip(), rowValues[3].strip(), rowValues[4].strip()).replace('    ', ' ')
+        repInfo['Name'] = '{0} {1} {2}'.format(rowValues[2].strip(), rowValues[3].strip(), rowValues[4].strip()).replace('  ', ' ')
         repInfo['Party'] = partyDict[str(rowValues[6].strip())]
         repInfo['Address'] = '{0} {1}, ME {2}'.format(rowValues[7].strip(), rowValues[8].strip(), rowValues[10].strip())
         repInfo['Email'] = rowValues[11].strip()
