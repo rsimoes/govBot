@@ -7,12 +7,16 @@ import re
 
 def getNERep(url):
     print url
-    soup = BeautifulSoup(urllib2.urlopen(url).read())
-    emailLink = soup.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]:')})
-    email = ''
-    if emailLink is not None:
-        email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', emailLink.get_text().strip())
-    return email
+    while True:
+        try:
+            soup = BeautifulSoup(urllib2.urlopen(url).read())
+            emailLink = soup.find('a', {'href': re.compile('[Mm][Aa][Ii][Ll][Tt][Oo]:')})
+            email = ''
+            if emailLink is not None:
+                email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', emailLink.get_text().strip())
+            return email
+        except Exception:
+            pass
 
 
 def getNELeg(partyDict):
