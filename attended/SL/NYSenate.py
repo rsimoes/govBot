@@ -7,29 +7,33 @@ import re
 
 def getContact(url):
     print url
-    contactSoup = BeautifulSoup(urllib2.urlopen(url).read())
-    address = ''
-    phone = ''
-    email = ''
-    analog = contactSoup.find_all('div', {'class': 'adr'})
-    for item in analog:
-        namespan = item.find('span', {'class': 'fn'})
-        if namespan is not None:
-            if item.find('span', {'class': 'fn'}).get_text().strip() == 'Albany Office':
-                street = item.find(re.compile('(span)|(div)'), {'class': 'street-address'}).get_text().replace('\n', '').strip().replace('     ', ' ').replace('    ', ' ').replace('   ', ' ').replace('  ', ' ')
-                city = item.find(re.compile('(span)|(div)'), {'class': 'locality'}).string.strip()
-                state = item.find(re.compile('(span)|(div)'), {'class': 'region'}).string.strip()
-                zip5 = item.find(re.compile('(span)|(div)'), {'class': 'postal-code'}).string.strip()
-                address = street + ' ' + city + ', ' + state + ' ' + zip5
-                rawphone = item.find('div', {'class': 'tel'})
-                rawemail = contactSoup.find('span', {'class': 'spamspan'})
-                if rawphone is not None:
-                    phone = rawphone.find('span', {'class': 'value'}).string.strip()
-                if rawemail is not None:
-                    username = rawemail.find('span', {'class': 'u'}).string.strip()
-                    domain = re.sub(' \[dot\] ', '.', rawemail.find('span', {'class': 'd'}).string.strip())
-                    email = username + '@' + domain
-                return phone, address, email
+    while True:
+        try:
+            contactSoup = BeautifulSoup(urllib2.urlopen(url).read())
+            address = ''
+            phone = ''
+            email = ''
+            analog = contactSoup.find_all('div', {'class': 'adr'})
+            for item in analog:
+                namespan = item.find('span', {'class': 'fn'})
+                if namespan is not None:
+                    if item.find('span', {'class': 'fn'}).get_text().strip() == 'Albany Office':
+                        street = item.find(re.compile('(span)|(div)'), {'class': 'street-address'}).get_text().replace('\n', '').strip().replace('     ', ' ').replace('    ', ' ').replace('   ', ' ').replace('  ', ' ')
+                        city = item.find(re.compile('(span)|(div)'), {'class': 'locality'}).string.strip()
+                        state = item.find(re.compile('(span)|(div)'), {'class': 'region'}).string.strip()
+                        zip5 = item.find(re.compile('(span)|(div)'), {'class': 'postal-code'}).string.strip()
+                        address = street + ' ' + city + ', ' + state + ' ' + zip5
+                        rawphone = item.find('div', {'class': 'tel'})
+                        rawemail = contactSoup.find('span', {'class': 'spamspan'})
+                        if rawphone is not None:
+                            phone = rawphone.find('span', {'class': 'value'}).string.strip()
+                        if rawemail is not None:
+                            username = rawemail.find('span', {'class': 'u'}).string.strip()
+                            domain = re.sub(' \[dot\] ', '.', rawemail.find('span', {'class': 'd'}).string.strip())
+                            email = username + '@' + domain
+                        return phone, address, email
+        except Exception:
+            pass
 
 
 def getNYSenate(partyDict):
