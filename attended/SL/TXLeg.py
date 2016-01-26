@@ -1,62 +1,180 @@
+#!/usr/bin/env python
+
 from bs4 import BeautifulSoup
-from csv import DictWriter
 from config import writePath
-import urllib2
+from unidecode import unidecode
+from urllib2 import urlopen
+import csv
+import os.path
 import re
 
 
-def getTXRep(url, partyDict, body):
+def get_tx_rep(url, body):
+
+    print 'Fetching ' + url + ' ...'
+
+    # In case of connection failure:
     while True:
-        print url
         try:
-            response = urllib2.urlopen(url)
-            soup = BeautifulSoup(response.read(), 'lxml')
-            distSpan = soup.find('span', {'id': 'lblDistrict'})
-            district = ''
-            name = ''
-            phone = ''
-            address = ''
-            if distSpan is not None:
-                district = 'TX State {0} District {1}'.format(body, distSpan.get_text().strip())
-                name = re.sub(r'^.*(Rep\.|Sen\.)', '', soup.find('title').string.strip()).strip().replace(u'\u00A0', ' ').replace('   ', ' ').replace('  ', ' ').replace(u'\u0144', 'n').replace(u'\u00f1', 'n').replace(u'\u2018', "'").replace(u'\u2019', "'").replace(u'\u201A', "'").replace(u'\u201B', "'").replace(u'\u2039', "'").replace(u'\u203A', "'").replace(u'\u201C', '"').replace(u'\u201D', '"').replace(u'\u201E', '"').replace(u'\u201F', '"').replace(u'\u00AB', '"').replace(u'\u00BB', '"').replace(u'\u00e0', 'a').replace(u'\u00e1', 'a').replace(u'\u00e8', 'e').replace(u'\u00e9', 'e').replace(u'\u00ec', 'i').replace(u'\u00ed', 'i').replace(u'\u00f2', 'o').replace(u'\u00f3', 'o').replace(u'\u00f9', 'u').replace(u'\u00fa', 'u')
-                phone = soup.find('span', {'id': 'lblCapitolPhone'}).get_text().strip()
-                address = '{0} {1}'.format(soup.find('span', {'id': 'lblCapitolAddress1'}).get_text().strip(), soup.find('span', {'id': 'lblCapitolAddress2'}).get_text().strip())
-            return district, name, phone, address
-        except Exception:
-            pass
+            response = urlopen(url)
+            break
+        except:
+            continue
+
+    soup = BeautifulSoup(response.read(), 'lxml')
+
+    return {
+        'house':  get_house_rep,
+        'senate': get_senator
+    }[body](soup)
 
 
-def getTXLeg(partyDict):
-    houseSoup = BeautifulSoup(urllib2.urlopen('http://www.capitol.state.tx.us/Members/Members.aspx?Chamber=H').read(), 'lxml')
-    senateSoup = BeautifulSoup(urllib2.urlopen('http://www.capitol.state.tx.us/Members/Members.aspx?Chamber=S').read(), 'lxml')
-    houseTable = houseSoup.find('table', {'id': 'dataListMembers'}).find_all('td')
-    senateTable = senateSoup.find('table', {'id': 'dataListMembers'}).find_all('td')
-    dictList = []
-
-    for item in houseTable:
-        repInfo = {}
-        link = item.find('a')
-        if link is not None:
-            repInfo['Website'] = 'http://www.capitol.state.tx.us/Members/' + link.get('href')
-            repInfo['District'], repInfo['Name'], repInfo['Phone'], repInfo['Address'] = getTXRep(repInfo['Website'], partyDict, 'House')
-            dictList.append(repInfo)
-
-    for item in senateTable:
-        repInfo = {}
-        link = item.find('a')
-        if link is not None:
-            repInfo['Website'] = 'http://www.capitol.state.tx.us/Members/' + link.get('href')
-            repInfo['District'], repInfo['Name'], repInfo['Phone'], repInfo['Address'] = getTXRep(repInfo['Website'], partyDict, 'Senate')
-            dictList.append(repInfo)
-
-    return dictList
+# Strip HTML tags, leading and trailing spaces on each line, redundant spacing:
+def thorough_strip(string):
+    string = re.sub(r'\<.+?>', '', string)
+    string = re.sub(r'[ \t]+', ' ', string)
+    string = re.sub(r'^[ \t]+|[ \t]+$', '', string, flags=re.MULTILINE)
+    string = re.sub('[\n\r]+', '\n', string)
+    return string
 
 
-if __name__ == "__main__":
-    partyDict = {'D': 'Democratic', 'R': 'Republican', 'I': 'Independent'}
-    dictList = getTXLeg(partyDict)
-    with open(writePath + 'TXLeg.csv', 'w') as csvFile:
-        dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Website', 'Phone', 'Address', 'Email', 'Facebook', 'Twitter'], restval='')
-        dwObject.writeheader()
-        for row in dictList:
-            dwObject.writerow(row)
+def get_house_rep(soup):
+    member_info = soup.find('div', {'class': 'member-info'})
+
+    number = re.search(
+        r'District (\d+)', str(member_info)
+    ).group(1)
+    district = 'TX State House District %s' % number
+
+    # TX House member names are in "Last, First" format:
+    def rewrite_name(string):
+        search = re.search('Rep. (.+?)(?:, (?!Jr.))(.+)', string)
+        if search is None:
+            return None
+
+        first, last = search.group(2).strip(), search.group(1).strip()
+        return unidecode(first + ' ' + last).strip()
+
+    name = rewrite_name(member_info.find('h2').get_text())
+
+    phone = re.search(
+        r'\([0-9]{3}\)\s[0-9]{3}-[0-9]{4}',
+        str(member_info)
+    ).group()
+
+    address = thorough_strip(
+        re.search(
+            r'Capitol Address:(.+?787\d{2})',
+            str(member_info),
+            re.DOTALL
+        ).group(1)
+    )
+
+    return {
+        'District': district,
+        'Name':     name,
+        'Phone':    phone,
+        'Address':  address
+    }
+
+
+def get_senator(soup):
+    memtitle = soup.find('div', {'class': 'memtitle'})
+
+    number = re.search(r'District (\d+)', memtitle.string).group(1)
+    district = 'TX State Senate District %s' % number
+
+    name = unidecode(
+        re.search(r'Senator (.+):', memtitle.string).group(1).strip()
+    )
+
+    memoffice = re.sub(
+        r'<.+?>',
+        '\n',
+        str(soup.find('td', {'class': 'memoffice'}))
+    ).strip()
+
+    search = re.search(
+        r'(The Honorable.+787\d{2}).*(\(\d{3}\).+\d{3}-\d{4})',
+        memoffice,
+        re.DOTALL
+    )
+
+    address = thorough_strip(search.group(1))
+
+    phone = search.group(2).strip()
+
+    return {
+        'District': district,
+        'Name':     name,
+        'Phone':    phone,
+        'Address':  address
+    }
+
+
+# Start with the state-provided directories of members and then go to each
+# member's page:
+def get_tx_leg():
+
+    base_urls = {
+        'house':  'http://www.house.state.tx.us',
+        'senate': 'http://www.senate.state.tx.us/75r/Senate/'
+    }
+    tables = {
+        'house': BeautifulSoup(
+            urlopen('http://www.house.state.tx.us/members').read(),
+            'lxml'
+        ).find(
+            'table', {'cellspacing': '10'}
+        ).find_all('td'),
+
+        'senate': BeautifulSoup(
+            urlopen(
+                'http://www.senate.state.tx.us/75r/Senate/Members.htm'
+            ).read(),
+            'lxml'
+        ).find(
+            'table', {'summary': '3 column layout of List of senators by name'}
+        ).find_all('li')
+    }
+
+    dict_list = []
+
+    for body in ('house', 'senate'):
+        for item in tables[body]:
+            rep_info = {}
+            link = item.find('a')
+
+            if link is None:
+                continue
+
+            url = base_urls[body] + link.get('href')
+            rep_info = {'Website': url}
+            rep_info.update(get_tx_rep(url, body))
+
+            # Skip entries with None values:
+            if len(filter(lambda val: val is None, rep_info.values())) > 0:
+                continue
+
+            print str(rep_info) + '\n'
+
+            dict_list.append(rep_info)
+
+    return dict_list
+
+
+if __name__ == '__main__':
+    dict_list = get_tx_leg()
+    with open(os.path.join(writePath, 'TXLeg.csv'), 'w') as csv_file:
+        csv = csv.DictWriter(
+            csv_file,
+            [
+                'District', 'Name', 'Party', 'Website', 'Phone',
+                'Address', 'Email', 'Facebook', 'Twitter'
+            ],
+            restval='',
+            lineterminator='\n'
+        )
+        csv.writeheader()
+        for row in dict_list:
+            csv.writerow(row)
