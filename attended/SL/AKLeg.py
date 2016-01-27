@@ -1,64 +1,89 @@
+#!/usr/bin/env python
+
 from bs4 import BeautifulSoup
 from csv import DictWriter
 from config import writePath
-import urllib2
+from urllib2 import urlopen
+from unidecode import unidecode
+import os.path
 import re
+import sys
 
+sys.path.append(
+    os.path.join(sys.path[0], '../../lib')
+)
+from govbot.util import multiline_strip
 
-def getAKrep(url):
-    while True:
-        print url
-        try:
-            response = urllib2.urlopen(url, timeout=10)
-            soup = BeautifulSoup(response.read()).find('div', {'id': 'fullpage'})
-            district = re.sub(r'^.*District: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))
-            party = re.sub(r'^.*Party: ([0-9A-Za-z]*).*$', r'\1', soup.get_text().replace('\n', ' '))
-            email = ''
-            tempEmail = soup.find('a', {'href': re.compile('mailto')})
-            if tempEmail is not None:
-                email = re.sub('[Mm][Aa][Ii][Ll][Tt][Oo]:', '', tempEmail.get('href'))
-            return district, party, email
-        except Exception:
-            pass
-
-
-def getAKLeg(partyDict):
-    houseSoup = BeautifulSoup(urllib2.urlopen('http://house.legis.state.ak.us/').read())
-    senateSoup = BeautifulSoup(urllib2.urlopen('http://senate.legis.state.ak.us/').read())
-
-    houseTable = houseSoup.find('div', {'id': 'legislators'}).find_all('div', {'class': 'leg_float'})
-    senateTable = senateSoup.find('div', {'id': 'legislators'}).find_all('div', {'class': 'leg_float'})
+def getAKLeg():
+    house, senate = map(
+        lambda body: BeautifulSoup(
+            urlopen('http://house.legis.state.ak.us/').read()
+        ).find(
+            'div', {'id': 'tab1-2'}
+        ).find(
+            'ul', {'class': 'people-holder'}
+        ).find(
+            'ul', {'class': 'item'}
+        ).find_all('li'),
+        ('house', 'senate')
+    )
 
     dictList = []
 
-    for item in houseTable:
-        repInfo = {}
-        link = item.find('a')
-        repInfo['Name'] = link.string.strip().replace('      ', ' ').replace('   ', ' ').replace('  ', ' ').replace(u'\u00f1', 'n').replace(u'\u2018', "'").replace(u'\u2019', "'").replace(u'\u201A', "'").replace(u'\u201B', "'").replace(u'\u2039', "'").replace(u'\u203A', "'").replace(u'\u201C', '"').replace(u'\u201D', '"').replace(u'\u201E', '"').replace(u'\u201F', '"').replace(u'\u00AB', '"').replace(u'\u00BB', '"').replace(u'\u00e0', 'a').replace(u'\u00e1', 'a').replace(u'\u00e8', 'e').replace(u'\u00e9', 'e').replace(u'\u00ec', 'i').replace(u'\u00ed', 'i').replace(u'\u00f2', 'o').replace(u'\u00f3', 'o').replace(u'\u00f9', 'u').replace(u'\u00fa', 'u')
-        repInfo['Website'] = link.get('href')
-        tempdist, tempparty, repInfo['Email'] = getAKrep(repInfo['Website'])
-        repInfo['District'] = 'AK State House District ' + tempdist
-        repInfo['Party'] = partyDict[str(tempparty)]
-        dictList.append(repInfo)
+    for body, table in zip(('House', 'Senate'), (house, senate)):
+        for item in table:
+            repInfo = {}
+            repInfo['Name'] = unidecode(
+                item.find('strong', {'class': 'name'}).string
+            ).strip()
 
-    for item in senateTable:
-        repInfo = {}
-        link = item.find('a')
-        repInfo['Name'] = link.string.strip().replace('      ', ' ').replace('   ', ' ').replace('  ', ' ').replace(u'\u00f1', 'n').replace(u'\u2018', "'").replace(u'\u2019', "'").replace(u'\u201A', "'").replace(u'\u201B', "'").replace(u'\u2039', "'").replace(u'\u203A', "'").replace(u'\u201C', '"').replace(u'\u201D', '"').replace(u'\u201E', '"').replace(u'\u201F', '"').replace(u'\u00AB', '"').replace(u'\u00BB', '"').replace(u'\u00e0', 'a').replace(u'\u00e1', 'a').replace(u'\u00e8', 'e').replace(u'\u00e9', 'e').replace(u'\u00ec', 'i').replace(u'\u00ed', 'i').replace(u'\u00f2', 'o').replace(u'\u00f3', 'o').replace(u'\u00f9', 'u').replace(u'\u00fa', 'u')
-        repInfo['Website'] = link.get('href')
-        tempdist, tempparty, repInfo['Email'] = getAKrep(repInfo['Website'])
-        repInfo['District'] = 'AK State Senate District ' + tempdist
-        repInfo['Party'] = partyDict[str(tempparty)]
-        dictList.append(repInfo)
+            link = item.find('a')
+            repInfo['Website'] = link.get('href')
+
+            dl = item.find('dl')
+            district = re.search(
+                r'District:\s*(\w+)', dl.get_text(), re.DOTALL
+            ).group(1)
+            repInfo['District'] = 'AK State {0} District {1}'.format(
+                body, district
+            )
+
+            repInfo['Party'] = re.search(
+            r'Party:\s*(\w+)', dl.get_text(), re.DOTALL
+            ).group(1)
+
+            repInfo['Phone'] = re.search(
+                r'Phone:\s*([0-9-]+)', dl.get_text(), re.DOTALL
+            ).group(1)
+
+            repInfo['Email'] = dl.find('a').get('href').replace('mailto:', '')
+
+            member_soup = BeautifulSoup(urlopen(repInfo['Website']).read())
+            repInfo['Address'] = multiline_strip(
+                re.search(
+                    r'Session Contact(.+99801)',
+                    member_soup.find_all('div', {'class': 'bioleft'})[1].get_text(),
+                    re.DOTALL
+                ).group(1)
+            )
+            print str(repInfo) + '\n'
+            dictList.append(repInfo)
 
     return dictList
 
 
 if __name__ == '__main__':
-    partyDict = {'(R)': 'Republican', '(D)': 'Democratic', '(I)': 'Independent', 'R': 'Republican', 'D': 'Democratic', '': 'Unknown', 'I': 'Independent', 'Democrat': 'Democratic', 'Republican': 'Republican', 'Democratic': 'Democratic', 'Independent': 'Independent'}
-    dictList = getAKLeg(partyDict)
-    with open(writePath + 'AKLeg.csv', 'w') as csvFile:
-        dwObject = DictWriter(csvFile, ['District', 'Name', 'Party', 'Website', 'Email', 'Phone', 'Address'], restval='')
+    dictList = getAKLeg()
+    with open(os.path.join(writePath, 'AKLeg.csv'), 'w') as csvFile:
+        dwObject = DictWriter(
+            csvFile,
+            [
+                'District', 'Name', 'Party', 'Website', 'Email', 'Phone',
+                'Address'
+            ],
+            restval='',
+            lineterminator='\n'
+        )
         dwObject.writeheader()
         for row in dictList:
             dwObject.writerow(row)
