@@ -7,7 +7,12 @@ from urllib2 import urlopen
 import csv
 import os.path
 import re
+import sys
 
+sys.path.append(
+    os.path.join(sys.path[0], '../../lib')
+)
+from govbot.util import multiline_strip
 
 def get_tx_rep(url, body):
 
@@ -30,10 +35,10 @@ def get_tx_rep(url, body):
 
 
 # Strip HTML tags, leading and trailing spaces on each line, redundant spacing:
-def thorough_strip(string):
+def multiline_strip(string):
     string = re.sub(r'\<.+?>', '', string)
     string = re.sub(r'[ \t]+', ' ', string)
-    string = re.sub(r'^[ \t]+|[ \t]+$', '', string, flags=re.MULTILINE)
+    string = re.sub(r'^\s+|\s+$', '', string, flags=re.MULTILINE)
     string = re.sub('[\n\r]+', '\n', string)
     return string
 
@@ -62,7 +67,7 @@ def get_house_rep(soup):
         str(member_info)
     ).group()
 
-    address = thorough_strip(
+    address = multiline_strip(
         re.search(
             r'Capitol Address:(.+?787\d{2})',
             str(member_info),
@@ -169,8 +174,8 @@ if __name__ == '__main__':
         csv = csv.DictWriter(
             csv_file,
             [
-                'District', 'Name', 'Party', 'Website', 'Phone',
-                'Address', 'Email', 'Facebook', 'Twitter'
+                'District', 'Name', 'Party', 'Website', 'Phone', 'Address',
+                'Email', 'Facebook', 'Twitter'
             ],
             restval='',
             lineterminator='\n'
